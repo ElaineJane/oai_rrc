@@ -50,7 +50,8 @@
 #   include "intertask_interface.h"
 #endif
 
-
+int harq_pid_updated[NUM_MAX_UE][8];
+int harq_pid_round[NUM_MAX_UE][8];
 
 
 void pmch_procedures(PHY_VARS_eNB *eNB,eNB_rxtx_proc_t *proc,PHY_VARS_RN *rn,relaying_type_t r_type) {

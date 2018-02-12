@@ -1078,6 +1078,8 @@ schedule_ue_spec(module_id_t module_idP,slice_id_t slice_idP,
 			      module_idP, CC_id, sdu_lengths[0]);
 			sdu_length_total = sdu_lengths[0];
 			sdu_lcids[0] = DCCH;
+           		UE_list->eNB_UE_stats[CC_id][UE_id].lcid_sdu[0] = DCCH;
+            UE_list->eNB_UE_stats[CC_id][UE_id].sdu_length_tx[DCCH] = sdu_lengths[0];
 			UE_list->eNB_UE_stats[CC_id][UE_id].
 			    num_pdu_tx[DCCH] += 1;
 			UE_list->
@@ -1124,8 +1126,12 @@ schedule_ue_spec(module_id_t module_idP,slice_id_t slice_idP,
 			sdu_lcids[num_sdus] = DCCH1;
 			sdu_length_total += sdu_lengths[num_sdus];
 			header_len_dcch += 2;
-			UE_list->eNB_UE_stats[CC_id][UE_id].
+	        	UE_list->eNB_UE_stats[CC_id][UE_id].lcid_sdu[num_sdus] = DCCH1;
+
+	     	        UE_list->eNB_UE_stats[CC_id][UE_id].
 			    num_pdu_tx[DCCH1] += 1;
+
+			UE_list->eNB_UE_stats[CC_id][UE_id].sdu_length_tx[DCCH1] = sdu_lengths[num_sdus];
 			UE_list->
 			    eNB_UE_stats[CC_id][UE_id].num_bytes_tx[DCCH1]
 			    += sdu_lengths[num_sdus];
@@ -1197,8 +1203,11 @@ schedule_ue_spec(module_id_t module_idP,slice_id_t slice_idP,
 				  module_idP, sdu_lengths[num_sdus], lcid);
 			    sdu_lcids[num_sdus] = lcid;
 			    sdu_length_total += sdu_lengths[num_sdus];
-			    UE_list->
-				eNB_UE_stats[CC_id][UE_id].num_pdu_tx[lcid]
+		            UE_list->eNB_UE_stats[CC_id][UE_id].lcid_sdu[num_sdus] = lcid;
+
+		            UE_list->eNB_UE_stats[CC_id][UE_id].sdu_length_tx[lcid] = sdu_lengths[num_sdus];
+
+                   	    UE_list->eNB_UE_stats[CC_id][UE_id].num_pdu_tx[lcid]
 				+= 1;
 			    UE_list->
 				eNB_UE_stats[CC_id][UE_id].num_bytes_tx
@@ -1422,6 +1431,7 @@ schedule_ue_spec(module_id_t module_idP,slice_id_t slice_idP,
 		    eNB->eNB_stats[CC_id].dlsch_pdus_tx += 1;
 
 		    UE_list->eNB_UE_stats[CC_id][UE_id].rbs_used = nb_rb;
+                    UE_list->eNB_UE_stats[CC_id][UE_id].num_mac_sdu_tx = num_sdus;
 		    UE_list->eNB_UE_stats[CC_id][UE_id].total_rbs_used +=
 			nb_rb;
 		    UE_list->eNB_UE_stats[CC_id][UE_id].dlsch_mcs1 =
