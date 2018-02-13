@@ -488,13 +488,13 @@ int flexran_agent_mac_stats_reply(mid_t mod_id,
                       
 
                      }    
-                     if (report_config->ue_report_type[i].ue_report_flags & PROTOCOL__FLEX_UE_STATS_TYPE__FLUST_MON_APP) {
+                     if (report_config->ue_report_type[i].ue_report_flags & PROTOCOL__FLEX_UE_STATS_TYPE__FLUST_MAC_STATS) {
 
-                            Protocol__FlexMonApp *monapp;
-                            monapp = malloc(sizeof(Protocol__FlexMonApp));
+                            Protocol__FlexMacStats *monapp;
+                            monapp = malloc(sizeof(Protocol__FlexMacStats));
                             if (monapp == NULL)
                               goto error;
-                            protocol__flex_mon_app__init(monapp);
+                            protocol__flex_mac_stats__init(monapp);
                                                    
 
                             monapp->total_bytes_sdus_dl = flexran_get_total_size_dl_mac_sdus(mod_id, i, cc_id);
@@ -502,9 +502,6 @@ int flexran_agent_mac_stats_reply(mid_t mod_id,
 
                             monapp->total_bytes_sdus_ul = flexran_get_total_size_ul_mac_sdus(mod_id, i, cc_id);
                             monapp->has_total_bytes_sdus_ul = 1;
-
-                            monapp->harq_round = flexran_get_harq_round(mod_id, cc_id, i);
-                            monapp->has_harq_round = 1;
 
                             monapp->tbs_dl = flexran_get_TBS_dl(mod_id, i, cc_id);
                             monapp->has_tbs_dl = 1;
@@ -580,7 +577,7 @@ int flexran_agent_mac_stats_reply(mid_t mod_id,
                             monapp->mac_sdus_dl = mac_sdus; 
                           
 
-                        ue_report[i]->mon_app = monapp;    
+                        ue_report[i]->mac_stats = monapp;    
 
                } 
                              
