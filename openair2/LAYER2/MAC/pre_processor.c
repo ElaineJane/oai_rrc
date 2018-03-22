@@ -63,6 +63,8 @@ extern int      slice_maxmcs[MAX_NUM_SLICES];
 extern int      slice_maxmcs_uplink[MAX_NUM_SLICES];
 extern pre_processor_results_t pre_processor_results[MAX_NUM_SLICES];
 
+extern int intraslice_share_active;
+
 //#define ICIC 0
 
 /* this function checks that get_eNB_UE_stats returns
@@ -164,6 +166,7 @@ store_dlsch_buffer(module_id_t Mod_id,
 
 #endif
 
+
     }
 
     if (UE_template->dl_buffer_total > 0)
@@ -204,7 +207,8 @@ assign_rbs_required(module_id_t Mod_id,
 
       CC_id = UE_list->ordered_CCids[n][UE_id];
       eNB_UE_stats = &UE_list->eNB_UE_stats[CC_id][UE_id];
-      eNB_UE_stats->dlsch_mcs1 = cmin(cqi_to_mcs[UE_list->UE_sched_ctrl[UE_id].dl_cqi[CC_id]], slice_maxmcs[slice_id]);
+//      eNB_UE_stats->dlsch_mcs1 = cmin(cqi_to_mcs[UE_list->UE_sched_ctrl[UE_id].dl_cqi[CC_id]], slice_maxmcs[slice_id]);
+      eNB_UE_stats->dlsch_mcs1 = cmin(cqi2mcs(UE_list->UE_sched_ctrl[UE_id].dl_cqi[CC_id]), slice_maxmcs[slice_id]);
 
     }
 
@@ -266,6 +270,8 @@ assign_rbs_required(module_id_t Mod_id,
               Mod_id, frameP, UE_id, CC_id, min_rb_unit[CC_id],
               nb_rbs_required[CC_id][UE_id], TBS,
               eNB_UE_stats->dlsch_mcs1);
+
+        pre_processor_results[slice_id].mcs[CC_id][UE_id] = eNB_UE_stats->dlsch_mcs1;
       }
     }
   }
@@ -680,7 +686,7 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
       CC_id = UE_list->ordered_CCids[i][UE_id];
       ue_sched_ctl = &UE_list->UE_sched_ctrl[UE_id];
       cc = &RC.mac[Mod_id]->common_channels[CC_id];
-      // TODO Can we use subframe2harqpid() here?
+      // FIXME: Can we use subframe2harqpid() here?
       if (cc->tdd_Config)
         harq_pid = ((frameP * 10) + subframeP) % 10;
       else
@@ -709,7 +715,7 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
   switch (slice_accounting[slice_id]) {
 
     // If greedy scheduling, try to account all the required RBs
-    case 1:
+    case POL_GREEDY:
       for (UE_id = UE_list->head; UE_id >= 0; UE_id = UE_list->next[UE_id]) {
         rnti = UE_RNTI(Mod_id, UE_id);
         if (rnti == NOT_A_RNTI) continue;
@@ -725,6 +731,7 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
 
     // Use the old, fair algorithm
     // Loop over all active UEs and account the avg number of RBs to each UE, based on all non-retx UEs.
+    // case POL_FAIR:
     default:
       // FIXME: This is not ideal, why loop on UEs to find average_rbs_per_user[], that is per-CC?
       // TODO: Look how to loop on active CCs only without using the UE_num_active_CC() function.
@@ -1290,12 +1297,14 @@ dlsch_scheduler_pre_processor(module_id_t Mod_id,
 #endif
 
   // Initialize scheduling information for all active UEs
+  memset(&pre_processor_results[slice_id], 0, sizeof(pre_processor_results));
+  // FIXME: After the memset above, some of the resets in reset() are redundant
   dlsch_scheduler_pre_processor_reset(Mod_id, slice_id, frameP, subframeP,
                                       min_rb_unit,
                                       nb_rbs_required,
                                       rballoc_sub,
                                       MIMO_mode_indicator,
-                                      mbsfn_flag); // TODO Not sure if useful
+                                      mbsfn_flag); // FIXME: Not sure if useful
 
   // STATUS
   // Store the DLSCH buffer for each logical channel
@@ -1327,13 +1336,15 @@ dlsch_scheduler_pre_processor(module_id_t Mod_id,
 
   // SHARING
   // If there are available RBs left in the slice, allocate them to the highest priority UEs
-  dlsch_scheduler_pre_processor_intraslice_sharing(Mod_id, slice_id,
-                                                   min_rb_unit,
-                                                   nb_rbs_required,
-                                                   nb_rbs_accounted,
-                                                   nb_rbs_remaining,
-                                                   rballoc_sub,
-                                                   MIMO_mode_indicator);
+  if (intraslice_share_active) {
+    dlsch_scheduler_pre_processor_intraslice_sharing(Mod_id, slice_id,
+                                                     min_rb_unit,
+                                                     nb_rbs_required,
+                                                     nb_rbs_accounted,
+                                                     nb_rbs_remaining,
+                                                     rballoc_sub,
+                                                     MIMO_mode_indicator);
+  }
 
 #ifdef TM5
   // This has to be revisited!!!!
@@ -1888,20 +1899,6 @@ void ulsch_scheduler_pre_processor(module_id_t module_idP,
       }
     }
   }
-
-#if 0
-    /* this logging is wrong, ue_sched_ctl may not be valid here
-     * TODO: fix
-     */
-    for (CC_id = 0; CC_id < RC.nb_mac_CC[module_idP]; CC_id++) {
-
-	if (total_allocated_rbs[CC_id] > 0) {
-	    LOG_D(MAC, "[eNB %d] total RB allocated for all UEs = %d/%d\n",
-		  module_idP, total_allocated_rbs[CC_id],
-              ue_sched_ctl->max_rbs_allowed_slice_uplink[CC_id][slice_id] - first_rb[CC_id]);
-	}
-    }
-#endif
 }
 
 void
@@ -2214,4 +2211,8 @@ void sort_ue_ul(module_id_t module_idP, int frameP, sub_frame_t subframeP)
 	}
     }
 #endif
+}
+
+int cqi2mcs(int cqi) {
+  return cqi_to_mcs[cqi];
 }
