@@ -103,12 +103,12 @@ void schedule_ulsch(module_id_t module_idP, frame_t frameP,
 
 /** \brief ULSCH Scheduling per RNTI
 @param Mod_id Instance ID of eNB
-@param slice_id Instance slice for this eNB
+@param slice_idx Slice instance index for this eNB
 @param frame Frame index
 @param subframe Subframe number on which to act
 @param sched_subframe Subframe number where PUSCH is transmitted (for DAI lookup)
 */
-void schedule_ulsch_rnti(module_id_t module_idP, slice_id_t slice_idP, frame_t frameP,
+void schedule_ulsch_rnti(module_id_t module_idP, int slice_idx, frame_t frameP,
 			 sub_frame_t subframe,
 			 unsigned char sched_subframe,
 			 uint16_t * first_rb);
@@ -132,7 +132,7 @@ void fill_DLSCH_dci(module_id_t module_idP, frame_t frameP,
 void schedule_dlsch(module_id_t module_idP, frame_t frameP,
 		      sub_frame_t subframe, int *mbsfn_flag);
 
-void schedule_ue_spec(module_id_t module_idP, slice_id_t slice_idP,
+void schedule_ue_spec(module_id_t module_idP, int slice_idxP,
 		      frame_t frameP,sub_frame_t subframe, int *mbsfn_flag);
 
 void schedule_ue_spec_phy_test(module_id_t module_idP,frame_t frameP,sub_frame_t subframe,int *mbsfn_flag);
@@ -193,6 +193,7 @@ void clear_nfapi_information(eNB_MAC_INST * eNB, int CC_idP,
 // eNB functions
 /* \brief This function assigns pre-available RBS to each UE in specified sub-bands before scheduling is done
 @param Mod_id Instance ID of eNB
+@param slice_idxP Slice instance index for the slice in which scheduling happens
 @param frame Index of frame
 @param subframe Index of current subframe
 @param N_RBS Number of resource block groups
@@ -200,13 +201,13 @@ void clear_nfapi_information(eNB_MAC_INST * eNB, int CC_idP,
 
 
 void dlsch_scheduler_pre_processor(module_id_t module_idP,
-                                   slice_id_t slice_idP,
+                                   int slice_idxP,
                                    frame_t frameP,
                                    sub_frame_t subframe,
                                    int *mbsfn_flag);
 
 void dlsch_scheduler_pre_processor_reset(module_id_t module_idP,
-                                         slice_id_t slice_id,
+                                         int slice_idx,
                                          frame_t frameP,
                                          sub_frame_t subframeP,
                                          int min_rb_unit[NFAPI_CC_MAX],
@@ -216,11 +217,11 @@ void dlsch_scheduler_pre_processor_reset(module_id_t module_idP,
                                          int *mbsfn_flag);
 
 void dlsch_scheduler_pre_processor_partitioning(module_id_t Mod_id,
-                                                slice_id_t slice_id,
+                                                int slice_idx,
                                                 const uint8_t rbs_retx[NFAPI_CC_MAX]);
 
 void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
-                                              slice_id_t slice_id,
+                                              int slice_idx,
                                               frame_t frameP,
                                               sub_frame_t subframeP,
                                               int min_rb_unit[NFAPI_CC_MAX],
@@ -228,7 +229,7 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
                                               uint16_t nb_rbs_accounted[NFAPI_CC_MAX][MAX_MOBILES_PER_ENB]);
 
 void dlsch_scheduler_pre_processor_positioning(module_id_t Mod_id,
-                                               slice_id_t slice_id,
+                                               int slice_idx,
                                                int min_rb_unit[NFAPI_CC_MAX],
                                                uint16_t nb_rbs_required[NFAPI_CC_MAX][MAX_MOBILES_PER_ENB],
                                                uint16_t nb_rbs_accounted[NFAPI_CC_MAX][MAX_MOBILES_PER_ENB],
@@ -237,7 +238,7 @@ void dlsch_scheduler_pre_processor_positioning(module_id_t Mod_id,
                                                uint8_t MIMO_mode_indicator[NFAPI_CC_MAX][N_RBG_MAX]);
 
 void dlsch_scheduler_pre_processor_intraslice_sharing(module_id_t Mod_id,
-                                                      slice_id_t slice_id,
+                                                      int slice_idx,
                                                       int min_rb_unit[NFAPI_CC_MAX],
                                                       uint16_t nb_rbs_required[NFAPI_CC_MAX][MAX_MOBILES_PER_ENB],
                                                       uint16_t nb_rbs_accounted[NFAPI_CC_MAX][MAX_MOBILES_PER_ENB],
@@ -701,18 +702,18 @@ int UE_PCCID(module_id_t mod_idP, int ue_idP);
 rnti_t UE_RNTI(module_id_t mod_idP, int ue_idP);
 
 
-void ulsch_scheduler_pre_processor(module_id_t module_idP, slice_id_t slice_id, int frameP,
+void ulsch_scheduler_pre_processor(module_id_t module_idP, int slice_idx, int frameP,
 				   sub_frame_t subframeP,
 				   uint16_t * first_rb);
 void store_ulsch_buffer(module_id_t module_idP, int frameP,
 			sub_frame_t subframeP);
 void sort_ue_ul(module_id_t module_idP, int frameP, sub_frame_t subframeP);
-void assign_max_mcs_min_rb(module_id_t module_idP, int slice_id, int frameP,
+void assign_max_mcs_min_rb(module_id_t module_idP, int slice_idx, int frameP,
 			   sub_frame_t subframeP, uint16_t * first_rb);
 void adjust_bsr_info(int buffer_occupancy, uint16_t TBS,
 		     UE_TEMPLATE * UE_template);
 int phy_stats_exist(module_id_t Mod_id, int rnti);
-void sort_UEs(module_id_t Mod_idP, slice_id_t slice_id, int frameP, sub_frame_t subframeP);
+void sort_UEs(module_id_t Mod_idP, int slice_idx, int frameP, sub_frame_t subframeP);
 
 /*! \fn  UE_L2_state_t ue_scheduler(const module_id_t module_idP,const frame_t frameP, const sub_frame_t subframe, const lte_subframe_t direction,const uint8_t eNB_index)
    \brief UE scheduler where all the ue background tasks are done.  This function performs the following:  1) Trigger PDCP every 5ms 2) Call RRC for link status return to PHY3) Perform SR/BSR procedures for scheduling feedback 4) Perform PHR procedures.
@@ -1234,8 +1235,8 @@ int l2_init_ue(int eMBMS_active, char *uecap_xer, uint8_t cba_group_active,
 
 /*Slice related functions */
 uint16_t nb_rbs_allowed_slice(float rb_percentage, int total_rbs);
-int ue_dl_slice_membership(module_id_t mod_id, int UE_id, slice_id_t slice_id);
-int ue_ul_slice_membership(module_id_t mod_id, int UE_id, slice_id_t slice_id);
+int ue_dl_slice_membership(module_id_t mod_id, int UE_id, int slice_idx);
+int ue_ul_slice_membership(module_id_t mod_id, int UE_id, int slice_idx);
 
 #endif
 /** @}*/
