@@ -2271,6 +2271,27 @@ void kill_RU_proc(int inst)
   pthread_cond_signal(&proc->cond_asynch_rxtx);
   pthread_mutex_unlock(&proc->mutex_asynch_rxtx);
 
+#if defined(PRE_SCD_THREAD)
+  pthread_mutex_lock(&proc->mutex_pre_scd);
+  proc->instance_pre_scd = 0;
+  pthread_cond_signal(&proc->cond_pre_scd);
+  pthread_mutex_unlock(&proc->mutex_pre_scd);
+  pthread_join(&proc->pthread_pre_scd, NULL);
+#endif
+
+#ifdef PHY_TX_THREAD
+  pthread_mutex_lock(&proc->mutex_phy_tx);
+  proc->instance_cnt_phy_tx = 0;
+  pthread_cond_signal(&proc->cond_phy_tx);
+  pthread_mutex_unlock(&proc->mutex_phy_tx);
+  pthread_mutex_lock(&proc->mutex_rf_tx);
+  proc->instance_cnt_rf_tx = 0;
+  pthread_cond_signal(&proc->cond_rf_tx);
+  pthread_mutex_unlock(&proc->mutex_rf_tx);
+  pthread_join(&proc->pthread_phy_tx, NULL);
+  pthread_join(&proc->pthread_rf_tx, NULL);
+#endif
+
   if (get_nprocs() > 4) {
     LOG_D(PHY, "Joining pthread_FHTX\n");
     pthread_join(proc->pthread_FH1, NULL);
@@ -2331,6 +2352,13 @@ void kill_RU_proc(int inst)
   pthread_mutex_destroy(&proc->mutex_FH);
   pthread_mutex_destroy(&proc->mutex_FH1);
   pthread_mutex_destroy(&proc->mutex_eNBs);
+#if defined(PRE_SCD_THREAD)
+  pthread_mutex_destroy(&proc->mutex_pre_scd);
+#endif
+#ifdef PHY_TX_THREAD
+  pthread_mutex_destroy(&proc->mutex_phy_tx);
+  pthread_mutex_destroy(&proc->mutex_rf_tx);
+#endif
 
   pthread_cond_destroy(&proc->cond_prach);
   pthread_cond_destroy(&proc->cond_FH);
@@ -2338,6 +2366,13 @@ void kill_RU_proc(int inst)
   pthread_cond_destroy(&proc->cond_asynch_rxtx);
   pthread_cond_destroy(&proc->cond_synch);
   pthread_cond_destroy(&proc->cond_eNBs);
+#if defined(PRE_SCD_THREAD)
+  pthread_cond_destroy(&proc->cond_pre_scd);
+#endif
+#ifdef PHY_TX_THREAD
+  pthread_cond_destroy(&proc->cond_phy_tx);
+  pthread_cond_destroy(&proc->cond_rf_tx);
+#endif
 
   pthread_attr_destroy(&proc->attr_FH);
   pthread_attr_destroy(&proc->attr_FH1);
@@ -2770,37 +2805,6 @@ void init_RU(char *rf_config_file) {
   LOG_D(HW,"[lte-softmodem.c] RU threads created\n");
   
 
-}
-
-
-
-
-void stop_ru(RU_t *ru) {
-  int *status;
-  printf("Stopping RU %p processing threads\n",(void*)ru);
-#if defined(PRE_SCD_THREAD)
-  if(ru){
-    ru->proc.instance_pre_scd = 0;
-    pthread_cond_signal( &ru->proc.cond_pre_scd );
-    pthread_join(ru->proc.pthread_pre_scd, (void**)&status );
-    pthread_mutex_destroy(&ru->proc.mutex_pre_scd );
-    pthread_cond_destroy(&ru->proc.cond_pre_scd );
-  }
-#endif
-#ifdef PHY_TX_THREAD
-  if(ru){
-      ru->proc.instance_cnt_phy_tx = 0;
-      pthread_cond_signal(&ru->proc.cond_phy_tx);
-      pthread_join( ru->proc.pthread_phy_tx, (void**)&status );
-      pthread_mutex_destroy( &ru->proc.mutex_phy_tx );
-      pthread_cond_destroy( &ru->proc.cond_phy_tx );
-      ru->proc.instance_cnt_rf_tx = 0;
-      pthread_cond_signal(&ru->proc.cond_rf_tx);
-      pthread_join( ru->proc.pthread_rf_tx, (void**)&status );
-      pthread_mutex_destroy( &ru->proc.mutex_rf_tx );
-      pthread_cond_destroy( &ru->proc.cond_rf_tx );
-  }
-#endif
 }
 
 void stop_RU(int nb_ru)
