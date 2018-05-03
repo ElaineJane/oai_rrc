@@ -789,6 +789,7 @@ int stop_L1L2(module_id_t enb_id)
   /* these tasks need to pick up new configuration */
   terminate_task(enb_id, TASK_ENB_APP, TASK_RRC_ENB);
   terminate_task(enb_id, TASK_ENB_APP, TASK_L2L1);
+  oai_exit = 1;
   LOG_I(ENB_APP, "calling kill_RU_proc() for instance %d\n", enb_id);
   kill_RU_proc(enb_id);
   LOG_I(ENB_APP, "calling kill_eNB_proc() for instance %d\n", enb_id);
