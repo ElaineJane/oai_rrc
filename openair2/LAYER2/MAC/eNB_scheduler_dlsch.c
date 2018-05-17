@@ -753,6 +753,9 @@ schedule_ue_spec(module_id_t module_idP, int slice_idxP,
 
   if (RC.mac[module_idP]->slice_info.interslice_share_active) {
     dlsch_scheduler_interslice_multiplexing(module_idP, frameP, subframeP, RC.mac[module_idP]->rballoc_sub);
+    /* the interslice multiplexing re-sorts the UE_list for the slices it tries
+     * to multiplex, so we need to sort it for the current slice again */
+    sort_UEs(module_idP, slice_idxP, frameP, subframeP);
   }
 
   for (CC_id = 0; CC_id < MAX_NUM_CCs; CC_id++) {
