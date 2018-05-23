@@ -19,8 +19,8 @@
  *      contact@openairinterface.org
  */
 
-/*! \file eNB_virtualizer.c
- * \brief Virtualization Manager for RAN Slicing 
+/*! \file virtualization_manager.c
+ * \brief Virtualization Manager for RAN Slicing, mapping/demapping physical to/from virtual resources 
  * \author  Shahab SHARIAT BAGHERI
  * \date 2018
  * \email: 
@@ -29,7 +29,7 @@
 
  */
 
-#include "eNB_virtualizer.h"
+#include "virtualization_manager.h"
 
 void slice_manager (){
 
@@ -37,24 +37,31 @@ void slice_manager (){
 
 }
 
+/*Slice Scheduling over window*/
 
 void slice_scheduling(){
+
+	/*Needs to be added to flexRAN*/
+	SliceScheduler_algo Vir_algo = SLA_BASED;
+	int window = 10; /*Needs to be added to flexRAN*/
 
 	Update_SliceTransmissionRate();
 
 
-    slice_scheduling_algorithm(SliceScheduler_algo Vir_algo);
+    slice_scheduling_algorithm(Vir_algo);
+
+    Create_Resource_Partitioning_Grid(window);
 
 }
 
 void Update_Slice_TransmissionRate(){
 
-	slice_context_manager * slice_ctx = GetSliceCtxt();
-	int sliceId;
+	// slice_context_manager * slice_ctx = GetSliceCtxt();
+	// int sliceId;
 
 	for (sliceId = 0; sliceId < 1; sliceId++){ /*loop over Admitted Slice*/
 
-
+			/*TBD*/
 
 	}
 
@@ -69,18 +76,22 @@ void virtualizaion_manager(){
 }
 
 
-/* Slice Scheduling Algorithm */
+/* 
+	Slice Scheduling Algorithm 
+
+*/
+
 
 void slice_scheduling_algorithm(SliceScheduler_algo Vir_algo){
 
    switch (Vir_algo){
      
+   	 /*TBD*/
+     // case PROPORTIONAL_BASED:
 
-     case PROPORTIONAL_BASED:
+     // slice_scheduling_algorithm_proportioanl_based();     
 
-     slice_scheduling_algorithm_proportioanl_based();     
-
-     break;
+     // break;
 
      case SLA_BASED:
 
@@ -102,20 +113,59 @@ void slice_scheduling_algorithm(SliceScheduler_algo Vir_algo){
 
 void slice_scheduling_algorithm_proportioanl_based(){
 
+	slice_context_manager * slice_ctx = GetSliceCtxt();
 
 
 }
 
 void slice_scheduling_algorithm_sla_based(){
 
- 	/*For the Downlink*/
+	slice_context_manager * slice_ctx = GetSliceCtxt();
+	int sliceId;
+	int sum = 0;
+	int SLICE_NUM = 1;
+	int average;
+	int slice_th[10]; /*This should be indicated from context manager with admitted slices*/
+	int slice_pct[10];
+
+	/*Slice throuput based on SLA from context manager*/
+
+	for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
+
+		slice_th[sliceId] = slice_ctx[sliceId]->thr_SLA;
+
+
+	}
+
+	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
+
+		sum = sum + slice_th[sliceId];	
+
+	}
+
+	/*Distribute the Percentage Resources*/
+	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
+
+		slice_pct[sliceId] = slice_ctx[sliceId]->thr_SLA/sum;
+	}
+
 
 }
 
 void slice_scheduling_algorithm_metric_based(){
 
+	slice_context_manager * slice_ctx = GetSliceCtxt();
 
 }
+
+ void Create_Resource_Partitioning_Grid(int window){
+
+ 	int N_RB_DL = flexran_get_N_RB_DL(0, 0); /*Needs to be handled in a better way, TBD*/
+
+
+
+ }
+
 
 /* Extend for APIs for UE association*/
 

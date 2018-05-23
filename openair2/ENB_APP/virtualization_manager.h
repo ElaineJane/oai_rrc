@@ -19,9 +19,9 @@
  *      contact@openairinterface.org
  */
 
-/*! \file eNB_virtualizer_API.c
- * \brief Slice Cxt Mgm Interface 
- * \author  shahab SHARIAT BAGHERI
+/*! \file eNB_virtualizer.h
+ * \brief Virtualization Manager for RAN Slicing 
+ * \author  Shahab SHARIAT BAGHERI
  * \date 2018
  * \email: 
  * \version 1.0
@@ -29,57 +29,62 @@
 
  */
 
-#include "eNB_virtualizer.h"
 
 
-slice_context_manager * slice_ctx;
+/* Virtualizer Parameters */
 
-void eNB_virtualizer_slice_context_setup(){
+typedef enum {
 
- 
-	eNB_virtualizer_set_slice_id();
+   SEQUENTIAL,
+   POLICY 
 
-	eNB_virtualizer_set_thr_SLA();	
+} aloc_order;
 
+typedef enum {
 
-}
+	SLA_BASED;
+	METRIC;
 
-void eNB_virtualizer_set_slice_id(){
+} sched_algo_type;
 
-	slice_ctx->slice_id = 0; /*Needs to be filled with Slice Creation in Slice Manager*/
-}
+typedef struct {
 
-void eNB_virtualizer_set_thr_SLA(){
+   int slice_id;
+   int thr_SLA ;
+   int rb_SLA;
 
-	slice_ctx->thr_SLA = 0; /*Needs to be filled with Slice Creation in Slice Manager*/
-}
+   UE_list_t ue_list;
 
-void eNB_virtualizer_set_rb_SLA(){
-
- /*TBD*/
-}
-
-void eNB_virtualizer_set_UE_list(){
-
-	/*TBD*/
-}
-
-void eNB_virtualizer_get_slice_id(){
+    
+} slice_context_manager;
 
 
-}
+typedef struct {
+    
+    int slice_id;
+    int window;
+    aloc_order aloc_or;
+    SliceScheduler_algo scheduler_algo;
 
-void eNB_virtualizer_get_thr_SLA(){
+
+} virtualizer_manager_t;
+
+/*For Slice Scheduler Algo*/
+
+typedef struct {
+	int slice_id;
+	int curr_thr;
+	int pct;
+	int sched_type;
+	int window;
+	
+} slice_current_state;
 
 
-}
+/*eNB_virtualizer Interface*/
 
-void eNB_virtualizer_get_rb_SLA(){
+void eNB_virtualizer_set_slice_id();
 
- /*TBD*/
-}
+void eNB_virtualizer_set_thr_SLA();
 
-void eNB_virtualizer_get_UE_list(){
-
-	/*TBD*/
-}
+void eNB_virtualizer_set_UE_list();

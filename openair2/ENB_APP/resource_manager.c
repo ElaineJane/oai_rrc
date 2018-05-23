@@ -20,7 +20,7 @@
  */
 
 /*! \file eNB_virtualizer_slice_resouce_manager.c
- * \brief Virtualization Manager for RAN Slicing 
+ * \brief resource Manager for RAN Slicing 
  * \author  Shahab SHARIAT BAGHERI
  * \date 2018
  * \email: 
@@ -34,10 +34,25 @@ int average_TransmissionRate = 100000;
 int TranmisttedBytes;
 
 
+
+typedef struct {
+	int slice_id;
+	int curr_thr;
+	
+} slice_current_state;
+
+
 void Setupdate(){
+
+		/*TBD*/
+
+}
+
+void Get_TransmittedBytes(){
 
 
 }
+
 
 void ResetTransmittedBytes(){
 
@@ -46,9 +61,11 @@ void ResetTransmittedBytes(){
 
 }
 
+/*For weight based*/
 void UpdateAverage_SliceTransmissionRate(){
 
 	int beta = 0.2;
+	int throughput_current = 1000; /*Needs to be changed*/
 
 	average_TransmissionRate = (1 - beta) * average_TransmissionRate + (beta * throughput_current)
 
