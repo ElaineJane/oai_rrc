@@ -77,6 +77,7 @@ typedef struct {
 	int slice_id;
 	int curr_thr;
 	int pct;
+  int end_rb;
 	
 } slice_current_state;
 

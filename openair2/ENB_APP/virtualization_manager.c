@@ -38,7 +38,7 @@ void slice_scheduling(){
 
 	/*Needs to be added to flexRAN*/
 	/* virtualizer params*/
-	virtualizer_manager_t * virt_mgr_t;
+	virtualizer_manager_t * virt_mgr_t = malloc(sizeof(virtualizer_manager_t));
 	virt_mgr_t->window = 10;
 	virt_mgr_t->aloc_or = SEQUENTIAL;
 	virt_mgr_t->scheduler_algo = SLA_BASED;
@@ -51,9 +51,9 @@ void slice_scheduling(){
 	// update_slice_transmissionrate();
 
 
-    // slice_scheduling_algorithm(virt_mgr_t, &slice_state);
+    slice_scheduling_algorithm(virt_mgr_t, &slice_state);
 
-    create_resource_partitioning_grid(virt_mgr_t);
+    create_resource_partitioning_grid(virt_mgr_t, &slice_state);
 
 }
 
@@ -123,7 +123,7 @@ void slice_scheduling_algorithm_proportioanl_based(){
 
 void slice_scheduling_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
-	slice_context_manager * slice_ctx = GetSliceCtxt();
+	slice_context_manager * slice_ctx = GetSliceCtxt(); /*Should be handled with context manager, connected with common agent */
 	int sliceId;
 	int sum = 0;
 	int SLICE_NUM = virt_mgr_t->num_admitted_slices;/*Should be handled with slice context manager*/
@@ -146,16 +146,16 @@ void slice_scheduling_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, sl
 		sum = sum + slice_th[sliceId];	
 
 	}
-
-	/*Distribute the Percentage Resources*/
+	/*calculate the percentage*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
 		slice_pct[sliceId] = slice_ctx[sliceId].thr_SLA/sum;
 	}
 
+	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		slice_state[sliceId].pct =  slice_pct[sliceId];
+		slice_state[sliceId].pct =  10;// slice_pct[sliceId]; /*Shoud be improved later*/
 	}
 
 
@@ -169,20 +169,42 @@ void slice_scheduling_algorithm_metric_based(){
 
  void create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
- 	int N_RBG_DL = flexran_get_N_RBG(0, 0); /*Needs to be handled in a better way, TBD*/
+ 	/*Temprorys*/
+ 	int cc_id = 0;
+ 	int mod_id = 0;
+ 	int i;
+
+
+ 	int N_RBG_DL = flexran_get_N_RBG(mod_id, cc_id); /*Needs to be handled in a better way, TBD*/
  	int window = virt_mgr_t->window;
  	int tot_rb = window * N_RBG_DL;
+ 	int end_rb;
 
- 	/*Create the matrix*/
+ 	/*Create and init the matrix*/
  	int mat[N_RBG_DL][window];
+
+ 	memset(mat,0, N_RBG_DL * window);
+
  	/*Decide based on distribution policy*/
  	if (virt_mgr_t->aloc_or == SEQUENTIAL){
+
+
+ 		for (i = 0;i < virt_mgr_t->num_admitted_slices;i++){
+
+ 			end_rb = ceil(slice_state[i].pct * tot_rb);
+
+ 		}
+
+
+		mat[end_rb % N_RBG_DL][end_rb / N_RBG_DL] = 1;
 
 
 
 
  	}
  	 else if (virt_mgr_t->aloc_or == PARALLEL){
+
+ 	 	/*Can be directly connected to RAN API!*/
 
 
  	 }
