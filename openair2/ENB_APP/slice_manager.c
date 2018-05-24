@@ -19,7 +19,7 @@
  *      contact@openairinterface.org
  */
 
-/*! \file eNB_virtualizer_API.c
+/*! \file slice_manager.c
  * \brief Slice Cxt Mgm, Admission Control, CRUD operations  
  * \author  shahab SHARIAT BAGHERI
  * \date 2018
@@ -29,62 +29,58 @@
 
  */
 
-#include "eNB_virtualizer.h"
+#include "virtualization_manager.h"
 
 
 slice_context_manager * slice_ctx;
 
 /*Needs to be with Slice Creation*/ 
-void eNB_slice_context_setup(){
+void slice_context_setup(){
 
-	eNB_virtualizer_set_slice_id();
+	set_slice_id();
 
-	eNB_virtualizer_set_thr_SLA();	
+	set_thr_SLA();	
 
 
 }
 
-void eNB_set_slice_id(){
+void set_slice_id(){
 
 	slice_ctx->slice_id = 0; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
-void eNB_set_thr_SLA(){
+void set_thr_SLA(){
 
 	slice_ctx->thr_SLA = 10; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
-void eNB_set_rb_SLA(){
+void set_rb_SLA(){
 
  /*TBD*/
 }
 
-void eNB_set_curr_thr(){
 
-	slice_ctx->thr_SLA = 0;  /*Needs to be filled with Slice Creation in Slice Manager*/
-}
-
-void eNB_set_UE_list(){
+void set_UE_list(){
 
 	/*TBD*/
 }
 
-void eNB_get_slice_id(){
+void get_slice_id(){
 
 
 }
 
-void eNB_get_thr_SLA(){
+void get_thr_SLA(){
 
 
 }
 
-void eNB_get_rb_SLA(){
+void get_rb_SLA(){
 
  /*TBD*/
 }
 
-void eNB_get_UE_list(){
+void get_UE_list(){
 
 	/*TBD*/
 }

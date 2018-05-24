@@ -31,33 +31,36 @@
 
 #include "virtualization_manager.h"
 
-void slice_manager (){
-
-
-
-}
 
 /*Slice Scheduling over window*/
 
 void slice_scheduling(){
 
 	/*Needs to be added to flexRAN*/
-	SliceScheduler_algo Vir_algo = SLA_BASED;
-	int window = 10; /*Needs to be added to flexRAN*/
+	/* virtualizer params*/
+	virtualizer_manager_t * virt_mgr_t;
+	virt_mgr_t->window = 10;
+	virt_mgr_t->aloc_or = SEQUENTIAL;
+	virt_mgr_t->scheduler_algo = SLA_BASED;
+	virt_mgr_t->num_admitted_slices = 1;
 
-	Update_SliceTransmissionRate();
+	/*Algorithm context state*/
+	slice_current_state  slice_state;
+
+	/*For metric based algorithms*/
+	// update_slice_transmissionrate();
 
 
-    slice_scheduling_algorithm(Vir_algo);
+    // slice_scheduling_algorithm(virt_mgr_t, &slice_state);
 
-    Create_Resource_Partitioning_Grid(window);
+    create_resource_partitioning_grid(virt_mgr_t);
 
 }
 
-void Update_Slice_TransmissionRate(){
+void update_slice_transmissionrate(){
 
 	// slice_context_manager * slice_ctx = GetSliceCtxt();
-	// int sliceId;
+	int sliceId;
 
 	for (sliceId = 0; sliceId < 1; sliceId++){ /*loop over Admitted Slice*/
 
@@ -82,9 +85,9 @@ void virtualizaion_manager(){
 */
 
 
-void slice_scheduling_algorithm(SliceScheduler_algo Vir_algo){
+void slice_scheduling_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
-   switch (Vir_algo){
+   switch (virt_mgr_t->scheduler_algo){
      
    	 /*TBD*/
      // case PROPORTIONAL_BASED:
@@ -95,13 +98,13 @@ void slice_scheduling_algorithm(SliceScheduler_algo Vir_algo){
 
      case SLA_BASED:
 
-     slice_scheduling_algorithm_sla_based();
+     slice_scheduling_algorithm_sla_based(virt_mgr_t, slice_state);
 
      break;
 
      case METRIC:
 
-     slice_scheduling_algorithm_metric_based();
+     slice_scheduling_algorithm_metric_based(virt_mgr_t, slice_state);
      
      break;
 
@@ -118,21 +121,22 @@ void slice_scheduling_algorithm_proportioanl_based(){
 
 }
 
-void slice_scheduling_algorithm_sla_based(){
+void slice_scheduling_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
 	slice_context_manager * slice_ctx = GetSliceCtxt();
 	int sliceId;
 	int sum = 0;
-	int SLICE_NUM = 1;
+	int SLICE_NUM = virt_mgr_t->num_admitted_slices;/*Should be handled with slice context manager*/
 	int average;
-	int slice_th[10]; /*This should be indicated from context manager with admitted slices*/
-	int slice_pct[10];
+	int slice_th[SLICE_NUM]; /*This should be indicated from context manager with admitted slices*/
+	int slice_pct[SLICE_NUM];
+	
 
 	/*Slice throuput based on SLA from context manager*/
 
 	for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
 
-		slice_th[sliceId] = slice_ctx[sliceId]->thr_SLA;
+		slice_th[sliceId] = slice_ctx[sliceId].thr_SLA;
 
 
 	}
@@ -146,7 +150,12 @@ void slice_scheduling_algorithm_sla_based(){
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		slice_pct[sliceId] = slice_ctx[sliceId]->thr_SLA/sum;
+		slice_pct[sliceId] = slice_ctx[sliceId].thr_SLA/sum;
+	}
+
+	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
+
+		slice_state[sliceId].pct =  slice_pct[sliceId];
 	}
 
 
@@ -158,9 +167,26 @@ void slice_scheduling_algorithm_metric_based(){
 
 }
 
- void Create_Resource_Partitioning_Grid(int window){
+ void create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
- 	int N_RB_DL = flexran_get_N_RB_DL(0, 0); /*Needs to be handled in a better way, TBD*/
+ 	int N_RBG_DL = flexran_get_N_RBG(0, 0); /*Needs to be handled in a better way, TBD*/
+ 	int window = virt_mgr_t->window;
+ 	int tot_rb = window * N_RBG_DL;
+
+ 	/*Create the matrix*/
+ 	int mat[N_RBG_DL][window];
+ 	/*Decide based on distribution policy*/
+ 	if (virt_mgr_t->aloc_or == SEQUENTIAL){
+
+
+
+
+ 	}
+ 	 else if (virt_mgr_t->aloc_or == PARALLEL){
+
+
+ 	 }
+
 
 
 

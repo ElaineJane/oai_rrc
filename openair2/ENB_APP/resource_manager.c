@@ -42,32 +42,32 @@ typedef struct {
 } slice_current_state;
 
 
-void Setupdate(){
+void setupdate(){
 
 		/*TBD*/
 
 }
 
-void Get_TransmittedBytes(){
+void get_transmittedbytes(){
 
 
 }
 
 
-void ResetTransmittedBytes(){
+void reset_transmittedbytes(){
 
 	TranmisttedBytes = 0;
-	Setupdate();
+	setupdate();
 
 }
 
 /*For weight based*/
-void UpdateAverage_SliceTransmissionRate(){
+void updateAverage_slicetransmissionRate(){
 
 	int beta = 0.2;
 	int throughput_current = 1000; /*Needs to be changed*/
 
-	average_TransmissionRate = (1 - beta) * average_TransmissionRate + (beta * throughput_current)
+	average_TransmissionRate = (1 - beta) * average_TransmissionRate + (beta * throughput_current);
 
 
 }

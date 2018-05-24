@@ -36,14 +36,14 @@
 typedef enum {
 
    SEQUENTIAL,
-   POLICY 
+   PARALLEL 
 
 } aloc_order;
 
 typedef enum {
 
-	SLA_BASED;
-	METRIC;
+	SLA_BASED,
+	METRIC
 
 } sched_algo_type;
 
@@ -52,8 +52,10 @@ typedef struct {
    int slice_id;
    int thr_SLA ;
    int rb_SLA;
-
-   UE_list_t ue_list;
+   int num_active_slices;
+   int num_slice_creation;
+    /*Should be considered for slice ctx management TBD*/
+   // UE_list_t ue_list; 
 
     
 } slice_context_manager;
@@ -61,22 +63,20 @@ typedef struct {
 
 typedef struct {
     
-    int slice_id;
     int window;
+    int num_admitted_slices;
     aloc_order aloc_or;
-    SliceScheduler_algo scheduler_algo;
+    sched_algo_type scheduler_algo;
 
 
 } virtualizer_manager_t;
 
-/*For Slice Scheduler Algo*/
+/*Slice Scheduler Algo*/
 
 typedef struct {
 	int slice_id;
 	int curr_thr;
 	int pct;
-	int sched_type;
-	int window;
 	
 } slice_current_state;
 
