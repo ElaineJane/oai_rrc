@@ -29,7 +29,15 @@
 
  */
 
+#include "assertions.h"
+#include "PHY/defs.h"
+#include "PHY/extern.h"
 
+#include "SCHED/defs.h"
+#include "SCHED/extern.h"
+
+#include "LAYER2/MAC/defs.h"
+#include "LAYER2/MAC/extern.h"
 
 /* Virtualizer Parameters */
 

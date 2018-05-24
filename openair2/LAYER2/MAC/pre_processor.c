@@ -694,18 +694,21 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
 
       if (round != 8) {
         nb_rbs_required[CC_id][UE_id] = UE_list->UE_template[CC_id][UE_id].nb_rb[harq_pid];
-        rbs_retx[CC_id] += nb_rbs_required[CC_id][UE_id];
-        ue_count_retx[CC_id]++;
+        /* Needs to be handled better */
+        // rbs_retx[CC_id] += nb_rbs_required[CC_id][UE_id];
+        // ue_count_retx[CC_id]++;
         //ue_retx_flag[CC_id][UE_id] = 1;
-      } else {
-        ue_count_newtx[CC_id]++;
       }
+       // else {
+      //   ue_count_newtx[CC_id]++;
+      // }
     }
   }
 
   // PARTITIONING
   // Reduces the available RBs according to slicing configuration
-  dlsch_scheduler_pre_processor_partitioning(Mod_id, slice_idx, rbs_retx);
+  /*This should be kept turn off for instance*/
+  // dlsch_scheduler_pre_processor_partitioning(Mod_id, slice_idx, rbs_retx);
 
   switch (RC.mac[Mod_id]->slice_info.dl[slice_idx].accounting) {
 
@@ -743,10 +746,10 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
           ue_sched_ctl = &UE_list->UE_sched_ctrl[UE_id];
           available_rbs = ue_sched_ctl->max_rbs_allowed_slice[CC_id][slice_idx];
 
-          if (ue_count_newtx[CC_id] == 0) {
+          if (total_ue_count[CC_id] == 0) {
             average_rbs_per_user[CC_id] = 0;
-          } else if (min_rb_unit[CC_id]*ue_count_newtx[CC_id] <= available_rbs) {
-            average_rbs_per_user[CC_id] = (uint16_t)floor(available_rbs/ue_count_newtx[CC_id]);
+          } else if (min_rb_unit[CC_id]*total_ue_count[CC_id] <= available_rbs) {
+            average_rbs_per_user[CC_id] = (uint16_t)floor(available_rbs/total_ue_count[CC_id]);
           } else {
             // consider the total number of use that can be scheduled UE
             average_rbs_per_user[CC_id] = (uint16_t)min_rb_unit[CC_id];
@@ -800,7 +803,7 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
     }
   }
 }
-
+/*With the slice associatioed to users can be correct*/
 void dlsch_scheduler_pre_processor_positioning(module_id_t Mod_id,
                                                int slice_idx,
                                                int N_RBG[MAX_NUM_CCs],
@@ -826,6 +829,7 @@ void dlsch_scheduler_pre_processor_positioning(module_id_t Mod_id,
 
     if (UE_RNTI(Mod_id, UE_id) == NOT_A_RNTI) continue;
     if (UE_list->UE_sched_ctrl[UE_id].ul_out_of_sync == 1) continue;
+    /*This check is can be looked inverse for the UE-slice assocation implementation*/
     if (!ue_dl_slice_membership(Mod_id, UE_id, slice_idx)) continue;
 
     for (i = 0; i < UE_num_active_CC(UE_list, UE_id); i++) {

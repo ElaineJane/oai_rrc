@@ -134,23 +134,23 @@ void slice_scheduling_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, sl
 
 	/*Slice throuput based on SLA from context manager*/
 
-	for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
+	// for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
 
-		slice_th[sliceId] = slice_ctx[sliceId].thr_SLA;
+		// slice_th[sliceId] = slice_ctx[sliceId].thr_SLA;
 
 
-	}
+	// }
 
-	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
+	// for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		sum = sum + slice_th[sliceId];	
+		// sum = sum + slice_th[sliceId];	
 
-	}
+	// }
 	/*calculate the percentage*/
-	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
+	// for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		slice_pct[sliceId] = slice_ctx[sliceId].thr_SLA/sum;
-	}
+		// slice_pct[sliceId] = slice_ctx[sliceId].thr_SLA/sum;
+	// }
 
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
@@ -173,6 +173,10 @@ void slice_scheduling_algorithm_metric_based(){
  	int cc_id = 0;
  	int mod_id = 0;
  	int i;
+ 	int j;
+ 	int slice_count = 1;
+ 	int tmp;
+ 	int mode_id = 0;
 
 
  	int N_RBG_DL = flexran_get_N_RBG(mod_id, cc_id); /*Needs to be handled in a better way, TBD*/
@@ -182,6 +186,7 @@ void slice_scheduling_algorithm_metric_based(){
 
  	/*Create and init the matrix*/
  	int mat[N_RBG_DL][window];
+ 	int mat_weight[N_RBG_DL][window];
 
  	memset(mat,0, N_RBG_DL * window);
 
@@ -197,6 +202,59 @@ void slice_scheduling_algorithm_metric_based(){
 
 
 		mat[end_rb % N_RBG_DL][end_rb / N_RBG_DL] = 1;
+
+		for (j = 0;j < window; i++){
+
+			for (i = 0;i < N_RBG_DL; j++){
+
+				mat_weight[i][j] = slice_count;
+
+				if (mat[i][j] == 1)
+					slice_count++;
+			}
+
+		}
+
+		for (j = 0; j < window; j++){
+
+			for (i = 0; i < N_RBG_DL - 1; i++){
+
+				if (mat_weight[i][j] != mat_weight[i+1][j]){
+
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = i;
+
+					if (RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high == 0){
+
+						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = i;
+					}
+					
+				}
+				else {
+
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = i;
+
+				}
+
+
+			}
+
+			if (mat_weight[N_RBG_DL - 1][j] != mat_weight[N_RBG_DL - 2][j]){
+
+				RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
+				RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = N_RBG_DL - 1;
+
+			}
+			else {
+				
+				RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
+
+			} 
+
+		}
+
+
+		// RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low;
+		// RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high
 
 
 
