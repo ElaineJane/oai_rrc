@@ -84,9 +84,8 @@ typedef struct {
 typedef struct {
 	int slice_id;
 	int curr_thr;
-	int pct;
-  int end_rb;
-	
+	double pct;
+
 } slice_current_state;
 
 

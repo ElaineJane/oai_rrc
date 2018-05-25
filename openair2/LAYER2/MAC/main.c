@@ -135,8 +135,8 @@ void mac_top_init_eNB(void)
 
         sli = &mac->slice_info;
 
-        sli->intraslice_share_active = 1;
-        sli->interslice_share_active = 1;
+        sli->intraslice_share_active = 0;
+        sli->interslice_share_active = 0;
 
         sli->n_dl = 1;
         memset(sli->dl, 0, sizeof(slice_sched_conf_dl_t) * MAX_NUM_SLICES);

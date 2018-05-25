@@ -30,8 +30,8 @@
  */
 
 
-int average_TransmissionRate = 100000;
-int TranmisttedBytes;
+int average_transmissionrate = 100000;
+int tranmisttedbytes;
 
 
 
@@ -56,7 +56,7 @@ void get_transmittedbytes(){
 
 void reset_transmittedbytes(){
 
-	TranmisttedBytes = 0;
+	tranmisttedbytes = 0;
 	setupdate();
 
 }
@@ -67,7 +67,7 @@ void updateAverage_slicetransmissionRate(){
 	int beta = 0.2;
 	int throughput_current = 1000; /*Needs to be changed*/
 
-	average_TransmissionRate = (1 - beta) * average_TransmissionRate + (beta * throughput_current);
+	average_transmissionrate = (1 - beta) * average_transmissionrate + (beta * throughput_current);
 
 
 }

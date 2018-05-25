@@ -42,18 +42,18 @@ void slice_scheduling(){
 	virt_mgr_t->window = 10;
 	virt_mgr_t->aloc_or = SEQUENTIAL;
 	virt_mgr_t->scheduler_algo = SLA_BASED;
-	virt_mgr_t->num_admitted_slices = 1;
+	virt_mgr_t->num_admitted_slices = 2;
 
 	/*Algorithm context state*/
-	slice_current_state  slice_state;
+	slice_current_state  slice_state[virt_mgr_t->num_admitted_slices];
 
 	/*For metric based algorithms*/
 	// update_slice_transmissionrate();
 
 
-    slice_scheduling_algorithm(virt_mgr_t, &slice_state);
+    resource_distribute_algorithm(virt_mgr_t, slice_state);
 
-    create_resource_partitioning_grid(virt_mgr_t, &slice_state);
+    create_resource_partitioning_grid(virt_mgr_t, slice_state);
 
 }
 
@@ -80,12 +80,12 @@ void virtualizaion_manager(){
 
 
 /* 
-	Slice Scheduling Algorithm 
+	Resource Distribute Algorithm 
 
 */
 
 
-void slice_scheduling_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
+void resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
    switch (virt_mgr_t->scheduler_algo){
      
@@ -98,13 +98,13 @@ void slice_scheduling_algorithm(virtualizer_manager_t * virt_mgr_t, slice_curren
 
      case SLA_BASED:
 
-     slice_scheduling_algorithm_sla_based(virt_mgr_t, slice_state);
+     resource_distribute_algorithm_sla_based(virt_mgr_t, slice_state);
 
      break;
 
      case METRIC:
 
-     slice_scheduling_algorithm_metric_based(virt_mgr_t, slice_state);
+     resource_distribute_algorithm_metric_based(virt_mgr_t, slice_state);
      
      break;
 
@@ -114,16 +114,16 @@ void slice_scheduling_algorithm(virtualizer_manager_t * virt_mgr_t, slice_curren
 
 }
 
-void slice_scheduling_algorithm_proportioanl_based(){
+void resource_distribute_algorithm_proportioanl_based(){
 
 	slice_context_manager * slice_ctx = GetSliceCtxt();
 
 
 }
 
-void slice_scheduling_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
+void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
-	slice_context_manager * slice_ctx = GetSliceCtxt(); /*Should be handled with context manager, connected with common agent */
+	// slice_context_manager * slice_ctx = GetSliceCtxt(); /*Should be handled with context manager, connected with common agent */
 	int sliceId;
 	int sum = 0;
 	int SLICE_NUM = virt_mgr_t->num_admitted_slices;/*Should be handled with slice context manager*/
@@ -155,19 +155,19 @@ void slice_scheduling_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, sl
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		slice_state[sliceId].pct =  10;// slice_pct[sliceId]; /*Shoud be improved later*/
+		slice_state[sliceId].pct =  0.5;// slice_pct[sliceId]; /*Shoud be improved later*/
 	}
 
 
 }
 
-void slice_scheduling_algorithm_metric_based(){
+void resource_distribute_algorithm_metric_based(){
 
 	slice_context_manager * slice_ctx = GetSliceCtxt();
 
 }
 
- void create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
+ void create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
  	/*Temprorys*/
  	int cc_id = 0;
@@ -175,7 +175,7 @@ void slice_scheduling_algorithm_metric_based(){
  	int i;
  	int j;
  	int slice_count = 1;
- 	int tmp;
+ 	double tmp;
  	int mode_id = 0;
 
 
@@ -188,71 +188,95 @@ void slice_scheduling_algorithm_metric_based(){
  	int mat[N_RBG_DL][window];
  	int mat_weight[N_RBG_DL][window];
 
- 	memset(mat,0, N_RBG_DL * window);
+ 	// memset(mat,0, N_RBG_DL * window);
+		for (j = 0;j < window; j++){
 
- 	/*Decide based on distribution policy*/
+			for (i = 0;i < N_RBG_DL; i++){
+
+				mat[i][j] = 0;
+				mat_weight[i][j] = 0;
+
+			}
+
+		}
+
+
+ 	/*Decide based on distribution policy for multi slices*/
  	if (virt_mgr_t->aloc_or == SEQUENTIAL){
 
 
- 		for (i = 0;i < virt_mgr_t->num_admitted_slices;i++){
+ 		if (virt_mgr_t->num_admitted_slices == 1){
 
- 			end_rb = ceil(slice_state[i].pct * tot_rb);
+ 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low = 0;
+ 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high = N_RBG_DL;
 
  		}
 
+ 		else {
 
-		mat[end_rb % N_RBG_DL][end_rb / N_RBG_DL] = 1;
+	 		tmp = 0;
+	 		for (i = 0;i < virt_mgr_t->num_admitted_slices - 1;i++){
 
-		for (j = 0;j < window; i++){
+	 			tmp += slice_state[i].pct;
+	 			end_rb = ceil(tmp * tot_rb);
+				mat[end_rb % N_RBG_DL][end_rb / N_RBG_DL] = 1;
 
-			for (i = 0;i < N_RBG_DL; j++){
+	 		}
 
-				mat_weight[i][j] = slice_count;
 
-				if (mat[i][j] == 1)
-					slice_count++;
+
+			for (j = 0;j < window; j++){
+
+				for (i = 0;i < N_RBG_DL; i++){
+
+					mat_weight[i][j] = slice_count;
+
+					if (mat[i][j] == 1)
+						slice_count++;
+				}
+
 			}
 
-		}
 
-		for (j = 0; j < window; j++){
+			for (j = 0; j < window; j++){
 
-			for (i = 0; i < N_RBG_DL - 1; i++){
+				for (i = 0; i < N_RBG_DL - 1; i++){
 
-				if (mat_weight[i][j] != mat_weight[i+1][j]){
+					if (mat_weight[i][j] != mat_weight[i+1][j]){
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = i;
+						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = i;
 
-					if (RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high == 0){
+						if (RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high == 0){
+
+							RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = i;
+						}
+						
+					}
+					else {
 
 						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = i;
+
 					}
-					
+
+
+				}
+
+				if (mat_weight[N_RBG_DL - 1][j] != mat_weight[N_RBG_DL - 2][j]){
+
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = N_RBG_DL - 1;
+
 				}
 				else {
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = i;
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
 
-				}
-
-
-			}
-
-			if (mat_weight[N_RBG_DL - 1][j] != mat_weight[N_RBG_DL - 2][j]){
-
-				RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
-				RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = N_RBG_DL - 1;
+				} 
 
 			}
-			else {
-				
-				RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
-
-			} 
-
-		}
 
 
+	   }
 		// RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low;
 		// RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high
 
