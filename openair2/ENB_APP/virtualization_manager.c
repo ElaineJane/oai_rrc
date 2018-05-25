@@ -179,7 +179,7 @@ void resource_distribute_algorithm_metric_based(){
  	int mode_id = 0;
 
 
- 	int N_RBG_DL = flexran_get_N_RBG(mod_id, cc_id); /*Needs to be handled in a better way, TBD*/
+ 	int N_RBG_DL = flexran_get_N_RBG(mod_id, cc_id); /*Needs to be handled in a better way for indexes, TBD*/
  	int window = virt_mgr_t->window;
  	int tot_rb = window * N_RBG_DL;
  	int end_rb;
@@ -187,6 +187,9 @@ void resource_distribute_algorithm_metric_based(){
  	/*Create and init the matrix*/
  	int mat[N_RBG_DL][window];
  	int mat_weight[N_RBG_DL][window];
+
+ 	int mat_par[N_RBG_DL];
+ 	int mat_weight_par[N_RBG_DL];
 
  	// memset(mat,0, N_RBG_DL * window);
 		for (j = 0;j < window; j++){
@@ -277,16 +280,72 @@ void resource_distribute_algorithm_metric_based(){
 
 
 	   }
-		// RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low;
-		// RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high
-
-
 
 
  	}
  	 else if (virt_mgr_t->aloc_or == PARALLEL){
 
- 	 	/*Can be directly connected to RAN API!*/
+
+ 	 		if (virt_mgr_t->num_admitted_slices == 1){
+
+	 	 		RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low = 0;
+	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high = N_RBG_DL;
+
+ 	 		}
+ 	 		else {	
+ 	 	
+	 	 		tmp = 0;
+		 		for (i = 0;i < virt_mgr_t->num_admitted_slices - 1;i++){
+
+		 			tmp += slice_state[i].pct;
+		 			end_rb = ceil(tmp * N_RBG_DL);
+		 			mat_par[end_rb % N_RBG_DL] = 1;
+
+		 		}
+
+		 		for (i = 0;i < N_RBG_DL; i++){
+
+					mat_weight_par[i] = slice_count;
+
+					if (mat_par[i] == 1)
+						slice_count++;
+				}
+
+				for (i = 0; i < N_RBG_DL - 1; i++){
+
+					if (mat_weight_par[i] != mat_weight_par[i+1]){
+
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high = i;
+
+						if (RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high == 0){
+
+							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low = i;
+						}
+						
+					}
+					else {
+
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low = i;
+
+					}
+
+				}
+
+				if (mat_weight_par[N_RBG_DL - 1] != mat_weight_par[N_RBG_DL - 2]){
+
+					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low = N_RBG_DL - 1;
+				}
+				else {
+
+					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high = N_RBG_DL - 1;
+
+				} 
+
+
+
+
+	 	    }
 
 
  	 }

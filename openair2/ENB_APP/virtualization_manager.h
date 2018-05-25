@@ -91,8 +91,8 @@ typedef struct {
 
 /*eNB_virtualizer Interface*/
 
-void eNB_virtualizer_set_slice_id();
+void set_slice_id();
 
-void eNB_virtualizer_set_thr_SLA();
+void set_thr_SLA();
 
-void eNB_virtualizer_set_UE_list();
+void set_UE_list();
