@@ -20,7 +20,7 @@
  */
 
 /*! \file slice_manager.c
- * \brief Slice Cxt Mgm, Admission Control, CRUD operations  
+ * \brief Slice Cxt Mgm, Admission Control, CRUD operations from orchestrator 
  * \author  shahab SHARIAT BAGHERI
  * \date 2018
  * \email: 

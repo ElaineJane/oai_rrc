@@ -20,7 +20,7 @@
  */
 
 /*! \file eNB_virtualizer_slice_resouce_manager.c
- * \brief resource Manager for RAN Slicing 
+ * \brief Resource Manager for RAN Slicing 
  * \author  Shahab SHARIAT BAGHERI
  * \date 2018
  * \email: 
