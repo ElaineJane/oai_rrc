@@ -40,7 +40,7 @@ void slice_scheduling(){
 	/* virtualizer params*/
 	virtualizer_manager_t * virt_mgr_t = malloc(sizeof(virtualizer_manager_t));
 	virt_mgr_t->window = 10;
-	virt_mgr_t->aloc_or = SEQUENTIAL;
+	virt_mgr_t->aloc_or = PARALLEL;
 	virt_mgr_t->scheduler_algo = SLA_BASED;
 	virt_mgr_t->num_admitted_slices = 2;
 
@@ -299,7 +299,7 @@ void resource_distribute_algorithm_metric_based(){
 
 		 			tmp += slice_state[i].pct;
 		 			end_rb = ceil(tmp * N_RBG_DL);
-		 			mat_par[end_rb % N_RBG_DL] = 1;
+		 			mat_par[end_rb] = 1;
 
 		 		}
 
