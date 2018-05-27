@@ -85,7 +85,7 @@ void get_UE_list(){
 	/*TBD*/
 }
 
-slice_context_manager * GetSliceCtxt(){
+slice_context_manager * getslicectxt(){
 
   return slice_ctx;
 }

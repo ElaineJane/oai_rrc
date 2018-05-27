@@ -45,7 +45,7 @@ void slice_scheduling(){
 	virt_mgr_t->num_admitted_slices = 2;
 
 	/*Algorithm context state*/
-	slice_current_state  slice_state[virt_mgr_t->num_admitted_slices];
+	slice_current_state  * slice_state = malloc(sizeof(slice_current_state) * virt_mgr_t->num_admitted_slices);
 
 	/*For metric based algorithms*/
 	// update_slice_transmissionrate();
@@ -57,20 +57,20 @@ void slice_scheduling(){
 
 }
 
-void update_slice_transmissionrate(){
+// void update_slice_transmissionrate(){
 
 	// slice_context_manager * slice_ctx = GetSliceCtxt();
-	int sliceId;
+	// int sliceId;
 
-	for (sliceId = 0; sliceId < 1; sliceId++){ /*loop over Admitted Slice*/
+	// for (sliceId = 0; sliceId < 1; sliceId++){ /*loop over Admitted Slice*/
 
-			/*TBD*/
+			/*TBImpl*/
 
-	}
+	// }
 
 
 
-}
+// }
 
 void virtualizaion_manager(){
 
@@ -109,12 +109,6 @@ void resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_cur
 
 }
 
-void resource_distribute_algorithm_proportioanl_based(){
-
-	slice_context_manager * slice_ctx = GetSliceCtxt();
-
-
-}
 
 void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
@@ -156,7 +150,7 @@ void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t,
 
 }
 
-void resource_distribute_algorithm_metric_based(){
+void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
 	slice_context_manager * slice_ctx = getslicectxt();
 
