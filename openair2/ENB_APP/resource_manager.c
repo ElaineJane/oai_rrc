@@ -61,7 +61,7 @@ void reset_transmittedbytes(){
 
 }
 
-/*For weight based*/
+/*Weight Based*/
 void updateAverage_slicetransmissionRate(){
 
 	int beta = 0.2;

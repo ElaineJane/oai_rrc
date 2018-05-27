@@ -90,12 +90,7 @@ void resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_cur
    switch (virt_mgr_t->scheduler_algo){
      
    	 /*TBD*/
-     // case PROPORTIONAL_BASED:
-
-     // slice_scheduling_algorithm_proportioanl_based();     
-
-     // break;
-
+     
      case SLA_BASED:
 
      resource_distribute_algorithm_sla_based(virt_mgr_t, slice_state);
@@ -123,7 +118,7 @@ void resource_distribute_algorithm_proportioanl_based(){
 
 void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
-	// slice_context_manager * slice_ctx = GetSliceCtxt(); /*Should be handled with context manager, connected with common agent */
+	// slice_context_manager * slice_ctx = getslicectxt(); /*Should be handled with context manager, connected with common agent */
 	int sliceId;
 	int sum = 0;
 	int SLICE_NUM = virt_mgr_t->num_admitted_slices;/*Should be handled with slice context manager*/
@@ -134,23 +129,23 @@ void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t,
 
 	/*Slice throuput based on SLA from context manager*/
 
-	// for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
+	 for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
 
-		// slice_th[sliceId] = slice_ctx[sliceId].thr_SLA;
+		 slice_th[sliceId] = 0;// slice_ctx[sliceId].thr_SLA; TODO
 
 
-	// }
+	 }
 
-	// for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
+	 for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		// sum = sum + slice_th[sliceId];	
+		 sum = sum + slice_th[sliceId];	
 
-	// }
+	 }
 	/*calculate the percentage*/
-	// for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
+	 for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		// slice_pct[sliceId] = slice_ctx[sliceId].thr_SLA/sum;
-	// }
+		 slice_pct[sliceId] = 0; // slice_ctx[sliceId].thr_SLA/sum; TODO
+	 }
 
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
@@ -163,7 +158,9 @@ void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t,
 
 void resource_distribute_algorithm_metric_based(){
 
-	slice_context_manager * slice_ctx = GetSliceCtxt();
+	slice_context_manager * slice_ctx = getslicectxt();
+
+	/*TBImpl*/
 
 }
 

@@ -56,7 +56,7 @@ void set_thr_SLA(){
 
 void set_rb_SLA(){
 
- /*TBD*/
+ 	/*TBD*/
 }
 
 
@@ -77,7 +77,7 @@ void get_thr_SLA(){
 
 void get_rb_SLA(){
 
- /*TBD*/
+ 	/*TBD*/
 }
 
 void get_UE_list(){

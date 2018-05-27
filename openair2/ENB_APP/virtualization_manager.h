@@ -89,10 +89,28 @@ typedef struct {
 } slice_current_state;
 
 
-/*eNB_virtualizer Interface*/
+/*Slice Manager Protos*/
 
 void set_slice_id();
 
 void set_thr_SLA();
 
 void set_UE_list();
+
+void slice_context_setup();
+
+void set_rb_SLA();
+
+void get_slice_id();
+
+void get_thr_SLA();
+
+void get_rb_SLA()
+
+slice_context_manager * getslicectxt();
+
+/*Virtualization Manager Protos*/
+
+void slice_scheduling();
+
+void virtualizaion_manager();
