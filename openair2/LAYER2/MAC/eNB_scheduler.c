@@ -640,6 +640,10 @@ eNB_dlsch_ulsch_scheduler(module_id_t module_idP, frame_t frameP,
 
 #endif
 
+  /*RAN Runtime Slicing */
+  if (subframeP == 0){
+  	slice_scheduling();
+  }
   // This schedules MIB
 
   if ((subframeP == 0) && (frameP & 3) == 0)
@@ -680,10 +684,6 @@ eNB_dlsch_ulsch_scheduler(module_id_t module_idP, frame_t frameP,
     flexran_agent_slice_update(module_idP);
   }
 
-  /*RAN Runtime Slicing */
-  if (subframeP == 0){
-  	slice_scheduling();
-  }
 
   stop_meas(&RC.mac[module_idP]->eNB_scheduler);
 

@@ -1541,23 +1541,23 @@ void flexran_set_dl_slice_priority(mid_t mod_id, int slice_idx, int priority)
 int flexran_get_dl_slice_position_low(mid_t mod_id, int slice_idx)
 {
   if (!mac_is_present(mod_id)) return -1;
-  return RC.mac[mod_id]->slice_info.dl[slice_idx].pos_low;
+  return RC.mac[mod_id]->slice_info.dl[slice_idx].pos_low[0]; // For instance
 }
 void flexran_set_dl_slice_position_low(mid_t mod_id, int slice_idx, int poslow)
 {
   if (!mac_is_present(mod_id)) return;
-  RC.mac[mod_id]->slice_info.dl[slice_idx].pos_low = poslow;
+  RC.mac[mod_id]->slice_info.dl[slice_idx].pos_low[0] = poslow;
 }
 
 int flexran_get_dl_slice_position_high(mid_t mod_id, int slice_idx)
 {
   if (!mac_is_present(mod_id)) return -1;
-  return RC.mac[mod_id]->slice_info.dl[slice_idx].pos_high;
+  return RC.mac[mod_id]->slice_info.dl[slice_idx].pos_high[0];
 }
 void flexran_set_dl_slice_position_high(mid_t mod_id, int slice_idx, int poshigh)
 {
   if (!mac_is_present(mod_id)) return;
-  RC.mac[mod_id]->slice_info.dl[slice_idx].pos_high = poshigh;
+  RC.mac[mod_id]->slice_info.dl[slice_idx].pos_high[0] = poshigh;
 }
 
 int flexran_get_dl_slice_maxmcs(mid_t mod_id, int slice_idx)

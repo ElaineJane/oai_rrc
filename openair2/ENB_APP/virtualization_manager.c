@@ -40,7 +40,7 @@ void slice_scheduling(){
 	/* virtualizer params*/
 	virtualizer_manager_t * virt_mgr_t = malloc(sizeof(virtualizer_manager_t));
 	virt_mgr_t->window = 10;
-	virt_mgr_t->aloc_or = PARALLEL;
+	virt_mgr_t->aloc_or = SEQUENTIAL;
 	virt_mgr_t->scheduler_algo = SLA_BASED;
 	virt_mgr_t->num_admitted_slices = 2;
 
@@ -198,12 +198,14 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
  	/*Decide based on distribution policy for multi slices*/
  	if (virt_mgr_t->aloc_or == SEQUENTIAL){
 
+	 	if (virt_mgr_t->num_admitted_slices == 1){
 
- 		if (virt_mgr_t->num_admitted_slices == 1){
+ 			for (j = 0;j < window; j++){
 
- 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low = 0;
- 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high = N_RBG_DL;
+	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low[j] = 0;
+	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high[j] = N_RBG_DL;
 
+	 		}
  		}
 
  		else {
@@ -238,17 +240,17 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
 
 					if (mat_weight[i][j] != mat_weight[i+1][j]){
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = i;
+						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high[j] = i;
 
-						if (RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high == 0){
+						if (RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high[j] == 0){
 
-							RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = i;
+							RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low[j] = i;
 						}
 						
 					}
 					else {
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = i;
+						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low[j] = i;
 
 					}
 
@@ -257,13 +259,13 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
 
 				if (mat_weight[N_RBG_DL - 1][j] != mat_weight[N_RBG_DL - 2][j]){
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
-					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high[j] = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low[j] = N_RBG_DL - 1;
 
 				}
 				else {
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high[j] = N_RBG_DL - 1;
 
 				} 
 
@@ -276,11 +278,11 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
  	}
  	 else if (virt_mgr_t->aloc_or == PARALLEL){
 
-
+ 	 		/* Needs to be changed*/
  	 		if (virt_mgr_t->num_admitted_slices == 1){
 
-	 	 		RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low = 0;
-	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high = N_RBG_DL;
+	 	 		RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low[0] = 0;
+	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high[0] = N_RBG_DL;
 
  	 		}
  	 		else {	
@@ -306,17 +308,17 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
 
 					if (mat_weight_par[i] != mat_weight_par[i+1]){
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high = i;
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] = i;
 
-						if (RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high == 0){
+						if (RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] == 0){
 
-							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low = i;
+							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low[j] = i;
 						}
 						
 					}
 					else {
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low = i;
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low[j] = i;
 
 					}
 
@@ -324,12 +326,12 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
 
 				if (mat_weight_par[N_RBG_DL - 1] != mat_weight_par[N_RBG_DL - 2]){
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high = N_RBG_DL - 1;
-					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low[j] = N_RBG_DL - 1;
 				}
 				else {
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high = N_RBG_DL - 1;
+					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] = N_RBG_DL - 1;
 
 				} 
 

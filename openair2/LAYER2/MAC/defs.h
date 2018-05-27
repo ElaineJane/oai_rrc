@@ -1023,9 +1023,9 @@ typedef struct {
 
     int       prio;
 
-    /// Frequency ranges for slice positioning
-    int       pos_low;
-    int       pos_high;
+    /// Frequency ranges for slice positioning (10ms window)
+    int       pos_low[10];
+    int       pos_high[10];
 
     // max mcs for each slice
     int       maxmcs;

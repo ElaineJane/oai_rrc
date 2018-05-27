@@ -241,8 +241,8 @@ assign_rbs_required(module_id_t Mod_id,
 
         N_RB_DL = to_prb(RC.mac[Mod_id]->common_channels[CC_id].mib->message.dl_Bandwidth);
 
-        UE_list->UE_sched_ctrl[UE_id].max_rbs_allowed_slice[CC_id][slice_idx] =
-                nb_rbs_allowed_slice(sli->dl[slice_idx].pct, N_RB_DL);
+        UE_list->UE_sched_ctrl[UE_id].max_rbs_allowed_slice[CC_id][slice_idx] = N_RB_DL;
+                // nb_rbs_allowed_slice(sli->dl[slice_idx].pct, N_RB_DL);
 
         /* calculating required number of RBs for each UE */
         while (TBS < UE_list->UE_template[pCCid][UE_id].dl_buffer_total) {
@@ -476,6 +476,8 @@ void decode_sorting_policy(module_id_t Mod_idP, int slice_idx) {
 
 void decode_slice_positioning(module_id_t Mod_idP,
                               int slice_idx,
+                              frame_t frameP,
+                              sub_frame_t subframe,
                               uint8_t slice_allocation_mask[MAX_NUM_CCs][N_RBG_MAX]) {
   uint8_t CC_id;
   int RBG, start_frequency, end_frequency;
@@ -487,8 +489,8 @@ void decode_slice_positioning(module_id_t Mod_idP,
     }
   }
 
-  start_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low;
-  end_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high;
+  start_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low[subframe];
+  end_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high[subframe];
   for (CC_id = 0; CC_id < MAX_NUM_CCs; ++CC_id) {
     for (RBG = start_frequency; RBG <= end_frequency; ++RBG) {
       slice_allocation_mask[CC_id][RBG] = 1;
@@ -806,6 +808,8 @@ void dlsch_scheduler_pre_processor_accounting(module_id_t Mod_id,
 /*With the slice associatioed to users can be correct*/
 void dlsch_scheduler_pre_processor_positioning(module_id_t Mod_id,
                                                int slice_idx,
+                                               frame_t frameP,
+                                               sub_frame_t subframe,
                                                int N_RBG[MAX_NUM_CCs],
                                                int min_rb_unit[MAX_NUM_CCs],
                                                uint16_t nb_rbs_required[MAX_NUM_CCs][NUMBER_OF_UE_MAX],
@@ -822,7 +826,7 @@ void dlsch_scheduler_pre_processor_positioning(module_id_t Mod_id,
   uint8_t slice_allocation_mask[MAX_NUM_CCs][N_RBG_MAX];
   UE_list_t *UE_list = &RC.mac[Mod_id]->UE_list;
 
-  decode_slice_positioning(Mod_id, slice_idx, slice_allocation_mask);
+  decode_slice_positioning(Mod_id, slice_idx, frameP,subframe, slice_allocation_mask);
 
   // Try to allocate accounted RBs
   for (UE_id = UE_list->head; UE_id >= 0; UE_id = UE_list->next[UE_id]) {
@@ -1031,6 +1035,8 @@ void dlsch_scheduler_pre_processor_positioning(module_id_t Mod_id,
 
 void dlsch_scheduler_pre_processor_intraslice_sharing(module_id_t Mod_id,
                                                       int slice_idx,
+                                                      frame_t frameP,
+                                                      sub_frame_t subframe,
                                                       int N_RBG[MAX_NUM_CCs],
                                                       int min_rb_unit[MAX_NUM_CCs],
                                                       uint16_t nb_rbs_required[MAX_NUM_CCs][NUMBER_OF_UE_MAX],
@@ -1048,7 +1054,7 @@ void dlsch_scheduler_pre_processor_intraslice_sharing(module_id_t Mod_id,
   slice_info_t *sli = &RC.mac[Mod_id]->slice_info;
   uint8_t (*slice_allocation_mask)[N_RBG_MAX] = sli->pre_processor_results[slice_idx].slice_allocation_mask;
 
-  decode_slice_positioning(Mod_id, slice_idx, slice_allocation_mask);
+  decode_slice_positioning(Mod_id, slice_idx, frameP, subframe, slice_allocation_mask);
 
   // Remaining RBs are allocated to high priority UEs
   for (UE_id = UE_list->head; UE_id >= 0; UE_id = UE_list->next[UE_id]) {
@@ -1326,6 +1332,8 @@ dlsch_scheduler_pre_processor(module_id_t Mod_id,
   // POSITIONING
   // This procedure does the main allocation of the RBs
   dlsch_scheduler_pre_processor_positioning(Mod_id, slice_idx,
+                                            frameP,
+                                            subframeP,
                                             N_RBG,
                                             min_rb_unit,
                                             nb_rbs_required,
@@ -1336,16 +1344,16 @@ dlsch_scheduler_pre_processor(module_id_t Mod_id,
 
   // SHARING
   // If there are available RBs left in the slice, allocate them to the highest priority UEs
-  if (RC.mac[Mod_id]->slice_info.intraslice_share_active) {
-    dlsch_scheduler_pre_processor_intraslice_sharing(Mod_id, slice_idx,
-                                                     N_RBG,
-                                                     min_rb_unit,
-                                                     nb_rbs_required,
-                                                     nb_rbs_accounted,
-                                                     nb_rbs_remaining,
-                                                     rballoc_sub,
-                                                     MIMO_mode_indicator);
-  }
+  // if (RC.mac[Mod_id]->slice_info.intraslice_share_active) {
+  //   dlsch_scheduler_pre_processor_intraslice_sharing(Mod_id, slice_idx,
+  //                                                    N_RBG,
+  //                                                    min_rb_unit,
+  //                                                    nb_rbs_required,
+  //                                                    nb_rbs_accounted,
+  //                                                    nb_rbs_remaining,
+  //                                                    rballoc_sub,
+  //                                                    MIMO_mode_indicator);
+  // }
 
 #ifdef TM5
   // This has to be revisited!!!!

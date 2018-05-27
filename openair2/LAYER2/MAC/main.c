@@ -142,7 +142,7 @@ void mac_top_init_eNB(void)
         memset(sli->dl, 0, sizeof(slice_sched_conf_dl_t) * MAX_NUM_SLICES);
         sli->dl[0].pct = 1.0;
         sli->dl[0].prio = 10;
-        sli->dl[0].pos_high = N_RBG_MAX;
+        sli->dl[0].pos_high[0] = N_RBG_MAX;
         sli->dl[0].maxmcs = 28;
         sli->dl[0].sorting = 0x012345;
         sli->dl[0].sched_name = "schedule_ue_spec";
