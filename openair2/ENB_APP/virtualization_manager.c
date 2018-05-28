@@ -40,7 +40,7 @@ void slice_scheduling(){
 	/* virtualizer params*/
 	virtualizer_manager_t * virt_mgr_t = malloc(sizeof(virtualizer_manager_t));
 	virt_mgr_t->window = 10;
-	virt_mgr_t->aloc_or = SEQUENTIAL;
+	virt_mgr_t->aloc_or = PARALLEL;
 	virt_mgr_t->scheduler_algo = SLA_BASED;
 	virt_mgr_t->num_admitted_slices = 2;
 
@@ -179,16 +179,19 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
  	int mat[N_RBG_DL][window];
  	int mat_weight[N_RBG_DL][window];
 
- 	int mat_par[N_RBG_DL];
- 	int mat_weight_par[N_RBG_DL];
+ 	int mat_par[N_RBG_DL][window];
+ 	int mat_weight_par[N_RBG_DL][window];
 
  	// memset(mat,0, N_RBG_DL * window);
 		for (j = 0;j < window; j++){
 
 			for (i = 0;i < N_RBG_DL; i++){
-
+				/*Seq */
 				mat[i][j] = 0;
 				mat_weight[i][j] = 0;
+				/*Para*/
+				mat_par[i][j] = 0;
+				mat_weight_par[i][j] = 0;
 
 			}
 
@@ -270,7 +273,7 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
 						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low[j] = i;				
 						
 					}
-					
+
 
 				}
 
@@ -304,53 +307,91 @@ void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr
  	 		}
  	 		else {	
  	 	
+
 	 	 		tmp = 0;
 		 		for (i = 0;i < virt_mgr_t->num_admitted_slices - 1;i++){
 
-		 			tmp += slice_state[i].pct;
-		 			end_rb = ceil(tmp * N_RBG_DL);
-		 			mat_par[end_rb] = 1;
+			 		tmp += slice_state[i].pct;
+			 		end_rb = ceil(tmp * N_RBG_DL);
+	 	 			
+		 			for (j = 0; j < window; j++){
+
+			 			mat_par[(end_rb - 1) % N_RBG_DL][j] = 1;
+			 				
+		 			}
+
 
 		 		}
 
-		 		for (i = 0;i < N_RBG_DL; i++){
+		 		for (j = 0; j < window; j++){
 
-					mat_weight_par[i] = slice_count;
+		 			slice_count = 0;
 
-					if (mat_par[i] == 1)
-						slice_count++;
+			 		for (i = 0;i < N_RBG_DL; i++){
+
+						mat_weight_par[i][j] = slice_count;
+
+						if (mat_par[i][j] == 1)
+							slice_count++;
+					}
+
 				}
+		 		
+				for (j = 0; j < window; j++){
 
-				for (i = 0; i < N_RBG_DL - 1; i++){
-
-					if (mat_weight_par[i] != mat_weight_par[i+1]){
-
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] = i;
-
-						if (RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] == 0){
-
-							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low[j] = i;
-						}
+					for (i = 0; i < virt_mgr_t->num_admitted_slices; i++){
 						
+						RC.mac[mod_id]->slice_info.dl[i].pos_low[j] = -1;
+						RC.mac[mod_id]->slice_info.dl[i].pos_high[j] = -2;
+
+					}
+
+				}	
+
+				for (j = 0; j < window; j++){
+
+					if (mat_weight_par[0][j] != mat_weight_par[1][j]){
+
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_low[j] = 0;
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_high[j] = 0;
+
+					}
+
+					else {
+
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_low[j] = 0;
+					}
+				
+					for (i = 1; i < N_RBG_DL - 1; i++){
+
+						if (mat_weight_par[i][j] != mat_weight_par[i+1][j]){
+
+							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i][j]].pos_high[j] = i;				
+							
+						}
+						else if (mat_weight_par[i][j] != mat_weight_par[i-1][j])  {
+
+							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i][j]].pos_low[j] = i;				
+							
+						}
+
+
+					}
+
+					if (mat_weight_par[N_RBG_DL - 1][j] != mat_weight_par[N_RBG_DL - 2][j]){
+
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_low[j] = N_RBG_DL - 1;
+
 					}
 					else {
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low[j] = i;
+						RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
 
 					}
 
 				}
 
-				if (mat_weight_par[N_RBG_DL - 1] != mat_weight_par[N_RBG_DL - 2]){
-
-					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] = N_RBG_DL - 1;
-					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_low[j] = N_RBG_DL - 1;
-				}
-				else {
-
-					RC.mac[mod_id]->slice_info.dl[mat_weight_par[i]].pos_high[j] = N_RBG_DL - 1;
-
-				} 
 
 
 
