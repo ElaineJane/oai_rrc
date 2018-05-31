@@ -29,63 +29,63 @@
 
  */
 
-#include "virtualization_manager.h"
+#include "flexran_agent_virtualization_manager.h"
 
 
 slice_context_manager * slice_ctx;
 
 /*Needs to be with Slice Creation*/ 
-void slice_context_setup(){
+void flexran_agent_slice_context_setup(){
 
-	set_slice_id();
+	flexran_agent_set_slice_id();
 
-	set_thr_SLA();	
+	flexran_agent_set_thr_SLA();	
 
 
 }
 
-void set_slice_id(){
+void flexran_agent_set_slice_id(){
 
 	slice_ctx->slice_id = 0; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
-void set_thr_SLA(){
+void flexran_agent_set_thr_SLA(){
 
 	slice_ctx->thr_SLA = 10; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
-void set_rb_SLA(){
+void flexran_agent_set_rb_SLA(){
 
  	/*TBD*/
 }
 
 
-void set_UE_list(){
+void flexran_agent_set_UE_list(){
 
 	/*TBD*/
 }
 
-void get_slice_id(){
+void flexran_agent_get_slice_id(){
 
 
 }
 
-void get_thr_SLA(){
+void flexran_agent_get_thr_SLA(){
 
 
 }
 
-void get_rb_SLA(){
+void flexran_agent_get_rb_SLA(){
 
  	/*TBD*/
 }
 
-void get_UE_list(){
+void flexran_agent_get_UE_list(){
 
 	/*TBD*/
 }
 
-slice_context_manager * getslicectxt(){
+slice_context_manager * flexran_agent_getslicectxt(){
 
   return slice_ctx;
 }

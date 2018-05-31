@@ -91,38 +91,38 @@ typedef struct {
 
 /*Slice Manager Protos*/
 
-void set_slice_id(void);
+void flexran_agent_set_slice_id(void);
 
-void set_thr_SLA(void);
+void flexran_agent_set_thr_SLA(void);
 
-void set_UE_list(void);
+void flexran_agent_set_UE_list(void);
 
-void slice_context_setup(void);
+void flexran_agent_slice_context_setup(void);
 
-void set_rb_SLA(void);
+void flexran_agent_set_rb_SLA(void);
 
-void get_slice_id(void);
+void flexran_agent_get_slice_id(void);
 
-void get_thr_SLA(void);
+void flexran_agent_get_thr_SLA(void);
 
-void get_rb_SLA(void);
+void flexran_agent_get_rb_SLA(void);
 
-void get_UE_list(void);
+void flexran_agent_get_UE_list(void);
 
-slice_context_manager * getslicectxt(void);
+slice_context_manager * flexran_agent_getslicectxt(void);
 
 /*Virtualization Manager Protos*/
 
-void slice_scheduling(void);
+void flexran_agent_slice_scheduling(void);
 
-void virtualizaion_manager(void);
+void flexran_agent_virtualizaion_manager(void);
 
 /*Slice Scheduling protos*/
 
-void resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state);
+void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state);
 
-void create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
+void flexran_agent_create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
 
-void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
+void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
 
-void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
+void flexran_agent_resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);

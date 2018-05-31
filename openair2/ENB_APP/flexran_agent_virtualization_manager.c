@@ -29,12 +29,12 @@
 
  */
 
-#include "virtualization_manager.h"
+#include "flexran_agent_virtualization_manager.h"
 
 
 /*Slice Scheduling over window*/
 
-void slice_scheduling(){
+void flexran_agent_slice_scheduling(){
 
 	/*Needs to be added to flexRAN*/
 	/* virtualizer params*/
@@ -51,9 +51,9 @@ void slice_scheduling(){
 	// update_slice_transmissionrate();
 
 
-    resource_distribute_algorithm(virt_mgr_t, slice_state);
+    flexran_agent_resource_distribute_algorithm(virt_mgr_t, slice_state);
 
-    create_resource_partitioning_grid(virt_mgr_t, slice_state);
+    flexran_agent_create_resource_partitioning_grid(virt_mgr_t, slice_state);
 
 }
 
@@ -72,7 +72,7 @@ void slice_scheduling(){
 
 // }
 
-void virtualizaion_manager(){
+void flexran_agent_virtualizaion_manager(){
 
 /*TB Implemeted*/
 
@@ -85,7 +85,7 @@ void virtualizaion_manager(){
 */
 
 
-void resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
+void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
    switch (virt_mgr_t->scheduler_algo){
      
@@ -93,13 +93,13 @@ void resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_cur
      
      case SLA_BASED:
 
-     resource_distribute_algorithm_sla_based(virt_mgr_t, slice_state);
+     flexran_agent_resource_distribute_algorithm_sla_based(virt_mgr_t, slice_state);
 
      break;
 
      case METRIC:
 
-     resource_distribute_algorithm_metric_based(virt_mgr_t, slice_state);
+     flexran_agent_resource_distribute_algorithm_metric_based(virt_mgr_t, slice_state);
      
      break;
 
@@ -110,9 +110,9 @@ void resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_cur
 }
 
 
-void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
+void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
-	// slice_context_manager * slice_ctx = getslicectxt(); /*Should be handled with context manager, connected with common agent */
+	// slice_context_manager * slice_ctx = flexran_agent_getslicectxt(); /*Should be handled with context manager, connected with common agent */
 	int sliceId;
 	int sum = 0;
 	int SLICE_NUM = virt_mgr_t->num_admitted_slices;/*Should be handled with slice context manager*/
@@ -150,15 +150,15 @@ void resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t,
 
 }
 
-void resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
+void flexran_agent_resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
-	slice_context_manager * slice_ctx = getslicectxt();
+	slice_context_manager * slice_ctx = flexran_agent_getslicectxt();
 
 	/*TBImpl*/
 
 }
 
- void create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
+ void flexran_agent_create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
  	/*Temprorys*/
  	int cc_id = 0;
