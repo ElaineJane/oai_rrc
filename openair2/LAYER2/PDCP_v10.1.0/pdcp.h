@@ -533,8 +533,8 @@ protected_pdcp(rnti_t                 pdcp_UE_UE_module_id_to_rnti[MAX_MOBILES_P
 protected_pdcp(rnti_t                 pdcp_eNB_UE_instance_to_rnti[MAX_MOBILES_PER_ENB];) // for noS1 mode
 protected_pdcp(unsigned int           pdcp_eNB_UE_instance_to_rnti_index;)
 #if (RRC_VERSION >= MAKE_VERSION(10, 0, 0))
-public_pdcp(pdcp_mbms_t               pdcp_mbms_array_ue[MAX_MOBILES_PER_ENB][maxServiceCount][maxSessionPerPMCH];)   // some constants from openair2/RRC/LITE/MESSAGES/asn1_constants.h
-public_pdcp(pdcp_mbms_t               pdcp_mbms_array_eNB[NUMBER_OF_eNB_MAX][maxServiceCount][maxSessionPerPMCH];) // some constants from openair2/RRC/LITE/MESSAGES/asn1_constants.h
+public_pdcp(pdcp_mbms_t               pdcp_mbms_array_ue[MAX_MOBILES_PER_ENB][maxServiceCount][maxSessionPerPMCH];)   // some constants from openair2/RRC/LTE/MESSAGES/asn1_constants.h
+public_pdcp(pdcp_mbms_t               pdcp_mbms_array_eNB[NUMBER_OF_eNB_MAX][maxServiceCount][maxSessionPerPMCH];) // some constants from openair2/RRC/LTE/MESSAGES/asn1_constants.h
 #endif
 protected_pdcp(sdu_size_t             pdcp_output_sdu_bytes_to_write;)
 protected_pdcp(sdu_size_t             pdcp_output_header_bytes_to_write;)
