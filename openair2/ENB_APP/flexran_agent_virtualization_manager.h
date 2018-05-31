@@ -39,6 +39,9 @@
 #include "LAYER2/MAC/defs.h"
 #include "LAYER2/MAC/extern.h"
 
+/*Macros*/
+#define MAX_NUM_SLICE   10
+
 /* Virtualizer Parameters */
 
 typedef enum {
@@ -91,9 +94,9 @@ typedef struct {
 
 /*Slice Manager Protos*/
 
-void flexran_agent_set_slice_id(void);
+void flexran_agent_set_slice_id(int slice_id);
 
-void flexran_agent_set_thr_SLA(void);
+void flexran_agent_set_thr_SLA(int slice_id, int thr_SLA);
 
 void flexran_agent_set_UE_list(void);
 

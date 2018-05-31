@@ -54,11 +54,6 @@ typedef struct {
   void (*flexran_agent_get_pending_dl_mac_config)(mid_t mod_id,
 						  Protocol__FlexranMessage **msg);
   
-  /// Notify the controller for a state change of a particular UE, by sending the proper
-  /// UE state change message (ACTIVATION, DEACTIVATION, HANDOVER)
-  // int (*flexran_agent_notify_ue_state_change)(mid_t mod_id, uint32_t rnti,
-		// 			       uint8_t state_change);
-  
   
   void *dl_scheduler_loaded_lib;
   void *ul_scheduler_loaded_lib;

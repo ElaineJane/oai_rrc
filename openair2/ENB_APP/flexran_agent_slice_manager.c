@@ -37,21 +37,30 @@ slice_context_manager * slice_ctx;
 /*Needs to be with Slice Creation*/ 
 void flexran_agent_slice_context_setup(){
 
-	flexran_agent_set_slice_id();
+	slice_ctx = malloc(sizeof(slice_context_manager) * MAX_NUM_SLICE);
+	if (slice_ctx == NULL)
+		goto error;
 
-	flexran_agent_set_thr_SLA();	
+	// flexran_agent_set_slice_id(); TBD
+
+	// flexran_agent_set_thr_SLA();	 TBD
+
+
+    error:
+
+    free(slice_ctx);
 
 
 }
 
-void flexran_agent_set_slice_id(){
+void flexran_agent_set_slice_id(int slice_id){
 
-	slice_ctx->slice_id = 0; /*Needs to be filled with Slice Creation in Slice Manager*/
+	slice_ctx[slice_id].slice_id = slice_id; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
-void flexran_agent_set_thr_SLA(){
+void flexran_agent_set_thr_SLA(int slice_id, int thr_SLA){
 
-	slice_ctx->thr_SLA = 10; /*Needs to be filled with Slice Creation in Slice Manager*/
+	slice_ctx[slice_id].thr_SLA = thr_SLA; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
 void flexran_agent_set_rb_SLA(){

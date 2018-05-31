@@ -185,6 +185,9 @@ int flexran_agent_start(mid_t mod_id)
   char *in_ip = flexran->remote_ipv4_addr;
   uint16_t in_port = flexran->remote_port;
 
+  /*Slice context setup*/
+  flexran_agent_slice_context_setup();
+
   /* if this agent is disabled, return and don't do anything */
   if (!flexran->enabled) {
     LOG_I(FLEXRAN_AGENT, "FlexRAN Agent for eNB %d is DISABLED\n", mod_id);
@@ -277,6 +280,8 @@ int flexran_agent_start(mid_t mod_id)
     pthread_mutex_lock(&flexran->mutex_node_ctrl);
     while (ENB_NORMAL_OPERATION != flexran->node_ctrl_state)
       pthread_cond_wait(&flexran->cond_node_ctrl, &flexran->mutex_node_ctrl);
+
+    /*The execution code should be here not after the unlock*/
     pthread_mutex_unlock(&flexran->mutex_node_ctrl);
 
     /* reconfigure RRC again, the agent might have changed the configuration */

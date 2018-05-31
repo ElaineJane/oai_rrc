@@ -31,18 +31,13 @@
 
 #include "flexran_agent_virtualization_manager.h"
 
+virtualizer_manager_t * virt_mgr_t;
 
 /*Slice Scheduling over window*/
 
 void flexran_agent_slice_scheduling(){
 
-	/*Needs to be added to flexRAN*/
-	/* virtualizer params*/
-	virtualizer_manager_t * virt_mgr_t = malloc(sizeof(virtualizer_manager_t));
-	virt_mgr_t->window = 10;
-	virt_mgr_t->aloc_or = PARALLEL;
-	virt_mgr_t->scheduler_algo = SLA_BASED;
-	virt_mgr_t->num_admitted_slices = 2;
+	flexran_agent_virtualizaion_manager();
 
 	/*Algorithm context state*/
 	slice_current_state  * slice_state = malloc(sizeof(slice_current_state) * virt_mgr_t->num_admitted_slices);
@@ -74,7 +69,13 @@ void flexran_agent_slice_scheduling(){
 
 void flexran_agent_virtualizaion_manager(){
 
-/*TB Implemeted*/
+	/*Needs to be added to flexRAN*/
+	/* virtualizer params*/
+	virt_mgr_t = malloc(sizeof(virtualizer_manager_t));
+	virt_mgr_t->window = 10;
+	virt_mgr_t->aloc_or = PARALLEL;
+	virt_mgr_t->scheduler_algo = SLA_BASED;
+	virt_mgr_t->num_admitted_slices = 2;
 
 }
 
@@ -93,15 +94,15 @@ void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mg
      
      case SLA_BASED:
 
-     flexran_agent_resource_distribute_algorithm_sla_based(virt_mgr_t, slice_state);
+       flexran_agent_resource_distribute_algorithm_sla_based(virt_mgr_t, slice_state);
 
-     break;
+       break;
 
      case METRIC:
 
-     flexran_agent_resource_distribute_algorithm_metric_based(virt_mgr_t, slice_state);
+       flexran_agent_resource_distribute_algorithm_metric_based(virt_mgr_t, slice_state);
      
-     break;
+       break;
 
    }
 
@@ -112,7 +113,7 @@ void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mg
 
 void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
-	// slice_context_manager * slice_ctx = flexran_agent_getslicectxt(); /*Should be handled with context manager, connected with common agent */
+	slice_context_manager * slice_ctx = flexran_agent_getslicectxt(); /*Should be handled with context manager, connected with common agent */
 	int sliceId;
 	int sum = 0;
 	int SLICE_NUM = virt_mgr_t->num_admitted_slices;/*Should be handled with slice context manager*/
