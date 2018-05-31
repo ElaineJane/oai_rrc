@@ -48,7 +48,7 @@ void flexran_agent_slice_scheduling(){
 	slice_current_state  * slice_state = malloc(sizeof(slice_current_state) * virt_mgr_t->num_admitted_slices);
 
 	/*For metric based algorithms*/
-	// update_slice_transmissionrate();
+	// flexran_agent_update_slice_transmissionrate();
 
 
     flexran_agent_resource_distribute_algorithm(virt_mgr_t, slice_state);
@@ -57,7 +57,7 @@ void flexran_agent_slice_scheduling(){
 
 }
 
-// void update_slice_transmissionrate(){
+// void flexran_agent_update_slice_transmissionrate(){
 
 	// slice_context_manager * slice_ctx = GetSliceCtxt();
 	// int sliceId;
@@ -125,26 +125,26 @@ void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t
 
 	 for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
 
-		 slice_th[sliceId] = 0;// slice_ctx[sliceId].thr_SLA; TODO
+	   slice_th[sliceId] = 0;// slice_ctx[sliceId].thr_SLA; TODO
 
 
 	 }
 
 	 for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		 sum = sum + slice_th[sliceId];	
+	   sum = sum + slice_th[sliceId];	
 
 	 }
 	/*calculate the percentage*/
 	 for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		 slice_pct[sliceId] = 0; // slice_ctx[sliceId].thr_SLA/sum; TODO
+	   slice_pct[sliceId] = 0; // slice_ctx[sliceId].thr_SLA/sum; TODO
 	 }
 
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-		slice_state[sliceId].pct =  0.5;// slice_pct[sliceId]; /*Shoud be improved later*/
+	  slice_state[sliceId].pct =  0.5;// slice_pct[sliceId]; /*Shoud be improved later*/
 	}
 
 
@@ -183,228 +183,226 @@ void flexran_agent_resource_distribute_algorithm_metric_based(virtualizer_manage
  	int mat_weight_par[N_RBG_DL][window];
 
  	// memset(mat,0, N_RBG_DL * window);
-		for (j = 0;j < window; j++){
+	for (j = 0;j < window; j++){
 
-			for (i = 0;i < N_RBG_DL; i++){
-				/*Seq */
-				mat[i][j] = 0;
-				mat_weight[i][j] = 0;
-				/*Para*/
-				mat_par[i][j] = 0;
-				mat_weight_par[i][j] = 0;
+	  for (i = 0;i < N_RBG_DL; i++){
+	    /*Seq */
+	    mat[i][j] = 0;
+	    mat_weight[i][j] = 0;
+	    /*Para*/
+	    mat_par[i][j] = 0;
+	    mat_weight_par[i][j] = 0;
 
-			}
+	  }
 
-		}
+	}
 
 
  	/*Decide based on distribution policy for multi slices*/
  	if (virt_mgr_t->aloc_or == SEQUENTIAL){
 
-	 	if (virt_mgr_t->num_admitted_slices == 1){
+	  if (virt_mgr_t->num_admitted_slices == 1){
 
- 			for (j = 0;j < window; j++){
+ 	    for (j = 0;j < window; j++){
 
-	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low[j] = 0;
-	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high[j] = N_RBG_DL;
+	 	  RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low[j] = 0;
+	 	  RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high[j] = N_RBG_DL;
 
-	 		}
- 		}
+	 	}
+ 	  }
 
- 		else {
+ 	  else {
 
-	 		tmp = 0;
-	 		for (i = 0;i < virt_mgr_t->num_admitted_slices - 1;i++){
+	    tmp = 0;
+	    for (i = 0;i < virt_mgr_t->num_admitted_slices - 1;i++){
 
-	 			tmp += slice_state[i].pct;
-	 			end_rb = ceil(tmp * tot_rb);
-				mat[(end_rb - 1) % N_RBG_DL][(end_rb / N_RBG_DL) - 1] = 1;
+	      tmp += slice_state[i].pct;
+	      end_rb = ceil(tmp * tot_rb);
+	      mat[(end_rb - 1) % N_RBG_DL][(end_rb / N_RBG_DL) - 1] = 1;
 
-	 		}
+	    }
 
 
 
-			for (j = 0;j < window; j++){
+	    for (j = 0;j < window; j++){
 
-				for (i = 0;i < N_RBG_DL; i++){
+	      for (i = 0;i < N_RBG_DL; i++){
 
-					mat_weight[i][j] = slice_count;
+	        mat_weight[i][j] = slice_count;
 
-					if (mat[i][j] == 1)
-						slice_count++;
-				}
+	        if (mat[i][j] == 1)
+		    slice_count++;
+	      }
 
-			}
+	    }
 
-			for (j = 0; j < window; j++){
+	    for (j = 0; j < window; j++){
 
-					for (i = 0; i < virt_mgr_t->num_admitted_slices; i++){
+	      for (i = 0; i < virt_mgr_t->num_admitted_slices; i++){
 						
-						RC.mac[mod_id]->slice_info.dl[i].pos_low[j] = -1;
-						RC.mac[mod_id]->slice_info.dl[i].pos_high[j] = -2;
+	        RC.mac[mod_id]->slice_info.dl[i].pos_low[j] = -1;
+		    RC.mac[mod_id]->slice_info.dl[i].pos_high[j] = -2;
 
-					}
+	      }
 
-			}
+	    }
 
 
-			for (j = 0; j < window; j++){
+	    for (j = 0; j < window; j++){
 
-				if (mat_weight[0][j] != mat_weight[1][j]){
+	      if (mat_weight[0][j] != mat_weight[1][j]){
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[0][j]].pos_low[j] = 0;
-					RC.mac[mod_id]->slice_info.dl[mat_weight[0][j]].pos_high[j] = 0;
+	        RC.mac[mod_id]->slice_info.dl[mat_weight[0][j]].pos_low[j] = 0;
+		    RC.mac[mod_id]->slice_info.dl[mat_weight[0][j]].pos_high[j] = 0;
 
-				}
-				else {
+		  }
+	      else {
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[0][j]].pos_low[j] = 0;
-				}
+	        RC.mac[mod_id]->slice_info.dl[mat_weight[0][j]].pos_low[j] = 0;
+	      }
 				
-				for (i = 1; i < N_RBG_DL - 1; i++){
+	      for (i = 1; i < N_RBG_DL - 1; i++){
 
-					if (mat_weight[i][j] != mat_weight[i+1][j]){
+	        if (mat_weight[i][j] != mat_weight[i+1][j]){
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high[j] = i;				
+	          RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_high[j] = i;				
 						
-					}
-					else if (mat_weight[i][j] != mat_weight[i-1][j])  {
+		    }
+		    else if (mat_weight[i][j] != mat_weight[i-1][j])  {
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low[j] = i;				
+		      RC.mac[mod_id]->slice_info.dl[mat_weight[i][j]].pos_low[j] = i;				
 						
-					}
+		    }
 
 
-				}
+	      }
 
-				if (mat_weight[N_RBG_DL - 1][j] != mat_weight[N_RBG_DL - 2][j]){
+	      if (mat_weight[N_RBG_DL - 1][j] != mat_weight[N_RBG_DL - 2][j]){
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
-					RC.mac[mod_id]->slice_info.dl[mat_weight[N_RBG_DL - 1][j]].pos_low[j] = N_RBG_DL - 1;
+	        RC.mac[mod_id]->slice_info.dl[mat_weight[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
+		    RC.mac[mod_id]->slice_info.dl[mat_weight[N_RBG_DL - 1][j]].pos_low[j] = N_RBG_DL - 1;
 
-				}
-				else {
+	      }
+	      else {
 
-					RC.mac[mod_id]->slice_info.dl[mat_weight[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
+	        RC.mac[mod_id]->slice_info.dl[mat_weight[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
 
-				}
+	      }
 
-			}
+	    }
 
 
-	   }
+	  }
 
 
  	}
- 	 else if (virt_mgr_t->aloc_or == PARALLEL){
+ 	else if (virt_mgr_t->aloc_or == PARALLEL){
 
  	 		/* Needs to be changed*/
- 	 		if (virt_mgr_t->num_admitted_slices == 1){
+ 	  if (virt_mgr_t->num_admitted_slices == 1){
 
-	 	 		RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low[0] = 0;
-	 			RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high[0] = N_RBG_DL;
+	    RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_low[0] = 0;
+	 	RC.mac[mod_id]->slice_info.dl[virt_mgr_t->num_admitted_slices - 1].pos_high[0] = N_RBG_DL;
 
- 	 		}
- 	 		else {	
+ 	  }
+ 	  else {	
  	 	
 
-	 	 		tmp = 0;
-		 		for (i = 0;i < virt_mgr_t->num_admitted_slices - 1;i++){
+	    tmp = 0;
+	    for (i = 0;i < virt_mgr_t->num_admitted_slices - 1;i++){
 
-			 		tmp += slice_state[i].pct;
-			 		end_rb = ceil(tmp * N_RBG_DL);
+	      tmp += slice_state[i].pct;
+	      end_rb = ceil(tmp * N_RBG_DL);
 	 	 			
-		 			for (j = 0; j < window; j++){
+	      for (j = 0; j < window; j++){
 
-			 			mat_par[(end_rb - 1) % N_RBG_DL][j] = 1;
+   	        mat_par[(end_rb - 1) % N_RBG_DL][j] = 1;
 			 				
-		 			}
+		  }
 
 
-		 		}
+	    }
 
-		 		for (j = 0; j < window; j++){
+	    for (j = 0; j < window; j++){
 
-		 			slice_count = 0;
+	      slice_count = 0;
 
-			 		for (i = 0;i < N_RBG_DL; i++){
+	      for (i = 0;i < N_RBG_DL; i++){
 
-						mat_weight_par[i][j] = slice_count;
+	        mat_weight_par[i][j] = slice_count;
 
-						if (mat_par[i][j] == 1)
-							slice_count++;
-					}
+		    if (mat_par[i][j] == 1)
+		      slice_count++;
+		  }
 
-				}
+		}
 		 		
-				for (j = 0; j < window; j++){
+		for (j = 0; j < window; j++){
 
-					for (i = 0; i < virt_mgr_t->num_admitted_slices; i++){
+		  for (i = 0; i < virt_mgr_t->num_admitted_slices; i++){
 						
-						RC.mac[mod_id]->slice_info.dl[i].pos_low[j] = -1;
-						RC.mac[mod_id]->slice_info.dl[i].pos_high[j] = -2;
+		    RC.mac[mod_id]->slice_info.dl[i].pos_low[j] = -1;
+			RC.mac[mod_id]->slice_info.dl[i].pos_high[j] = -2;
 
-					}
+		  }
 
-				}	
+		}	
 
-				for (j = 0; j < window; j++){
+		for (j = 0; j < window; j++){
 
-					if (mat_weight_par[0][j] != mat_weight_par[1][j]){
+		  if (mat_weight_par[0][j] != mat_weight_par[1][j]){
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_low[j] = 0;
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_high[j] = 0;
+		    RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_low[j] = 0;
+		    RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_high[j] = 0;
 
-					}
+		  }
 
-					else {
+		  else {
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_low[j] = 0;
-					}
+		    RC.mac[mod_id]->slice_info.dl[mat_weight_par[0][j]].pos_low[j] = 0;
+		  }
 				
-					for (i = 1; i < N_RBG_DL - 1; i++){
+		  for (i = 1; i < N_RBG_DL - 1; i++){
 
-						if (mat_weight_par[i][j] != mat_weight_par[i+1][j]){
+		    if (mat_weight_par[i][j] != mat_weight_par[i+1][j]){
 
-							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i][j]].pos_high[j] = i;				
+		      RC.mac[mod_id]->slice_info.dl[mat_weight_par[i][j]].pos_high[j] = i;				
 							
-						}
-						else if (mat_weight_par[i][j] != mat_weight_par[i-1][j])  {
+			}
+		    else if (mat_weight_par[i][j] != mat_weight_par[i-1][j])  {
 
-							RC.mac[mod_id]->slice_info.dl[mat_weight_par[i][j]].pos_low[j] = i;				
+			  RC.mac[mod_id]->slice_info.dl[mat_weight_par[i][j]].pos_low[j] = i;				
 							
-						}
+			}
 
 
-					}
+		  }
 
-					if (mat_weight_par[N_RBG_DL - 1][j] != mat_weight_par[N_RBG_DL - 2][j]){
+		  if (mat_weight_par[N_RBG_DL - 1][j] != mat_weight_par[N_RBG_DL - 2][j]){
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_low[j] = N_RBG_DL - 1;
+		    RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
+			RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_low[j] = N_RBG_DL - 1;
 
-					}
-					else {
+		  }
+		  else {
 
-						RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
+		    RC.mac[mod_id]->slice_info.dl[mat_weight_par[N_RBG_DL - 1][j]].pos_high[j] = N_RBG_DL - 1;
 
-					}
+		  }
 
-				}
-
-
-
-
-
-	 	    }
-
-
- 	 }
+		}
 
 
 
 
- }
+
+	  }
+
+
+ 	}
+
+
+}
 
 
 /* Extend for APIs for UE association*/
