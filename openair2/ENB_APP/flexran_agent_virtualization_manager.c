@@ -69,13 +69,15 @@ void flexran_agent_slice_scheduling(){
 
 void flexran_agent_virtualizaion_manager(){
 
+	int mod_id = 0;
+
 	/*Needs to be added to flexRAN*/
 	/* virtualizer params*/
 	virt_mgr_t = malloc(sizeof(virtualizer_manager_t));
 	virt_mgr_t->window = 10;
 	virt_mgr_t->aloc_or = PARALLEL;
 	virt_mgr_t->scheduler_algo = SLA_BASED;
-	virt_mgr_t->num_admitted_slices = 2;
+	virt_mgr_t->num_admitted_slices = flexran_get_num_dl_slices(mod_id);
 
 }
 

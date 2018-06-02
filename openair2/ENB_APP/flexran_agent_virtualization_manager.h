@@ -39,6 +39,8 @@
 #include "LAYER2/MAC/defs.h"
 #include "LAYER2/MAC/extern.h"
 
+#include "flexran_agent_ran_api.h"
+
 /*Macros*/
 #define MAX_NUM_SLICE   10
 
