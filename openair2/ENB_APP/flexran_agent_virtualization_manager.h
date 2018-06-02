@@ -63,6 +63,7 @@ typedef enum {
 typedef struct {
 
    int slice_id;
+   int label;
    int thr_SLA ;
    int rb_SLA;
    int num_active_slices;
@@ -96,9 +97,9 @@ typedef struct {
 
 /*Slice Manager Protos*/
 
-void flexran_agent_set_slice_id(int slice_id);
+void flexran_agent_set_slice_id(int slice_id, int index);
 
-void flexran_agent_set_thr_SLA(int slice_id, int thr_SLA);
+void flexran_agent_set_thr_SLA(int index, int thr_SLA);
 
 void flexran_agent_set_UE_list(void);
 
@@ -107,6 +108,8 @@ void flexran_agent_slice_context_setup(void);
 void flexran_agent_set_rb_SLA(void);
 
 void flexran_agent_get_slice_id(void);
+
+void flexran_agent_get_slice_label(int index, int label);
 
 void flexran_agent_get_thr_SLA(void);
 

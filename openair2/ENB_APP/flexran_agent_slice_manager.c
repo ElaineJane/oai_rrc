@@ -52,15 +52,21 @@ void flexran_agent_slice_context_setup(){
 
 
 }
+/*APIs used by the slice creation*/
+void flexran_agent_set_slice_id(int slice_id, int index){
 
-void flexran_agent_set_slice_id(int slice_id){
-
-	slice_ctx[slice_id].slice_id = slice_id; /*Needs to be filled with Slice Creation in Slice Manager*/
+	slice_ctx[index].slice_id = slice_id; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
-void flexran_agent_set_thr_SLA(int slice_id, int thr_SLA){
+void flexran_agent_set_slice_label(int index, int label){
 
-	slice_ctx[slice_id].thr_SLA = thr_SLA; /*Needs to be filled with Slice Creation in Slice Manager*/
+	slice_ctx[index].label = label; /*Needs to be filled with Slice Creation in Slice Manager*/
+}
+
+
+void flexran_agent_set_thr_SLA(int index, int thr_SLA){
+
+	slice_ctx[index].thr_SLA = thr_SLA; /*Needs to be filled with Slice Creation in Slice Manager*/
 }
 
 void flexran_agent_set_rb_SLA(){
@@ -78,6 +84,12 @@ void flexran_agent_get_slice_id(){
 
 
 }
+
+void flexran_agent_get_slice_label(int index, int label){
+
+	return slice_ctx[index].label; /*Needs to be filled with Slice Creation in Slice Manager*/
+}
+
 
 void flexran_agent_get_thr_SLA(){
 
@@ -98,3 +110,30 @@ slice_context_manager * flexran_agent_getslicectxt(){
 
   return slice_ctx;
 }
+
+/*Slice Creation/Delete/Update */
+
+int flexran_agent_create_slice(){
+
+
+	// flexran_create_dl_slice(mod_id, sc_update[mod_id]->dl[i]->id); 
+      /*flexran_create_ul_slice(mod_id, sc_update[mod_id]->ul[i]->id);*/
+
+
+
+
+
+
+
+}
+
+int flexran_agent_delete_slice(){
+
+
+	// flexran_remove_dl_slice(mod_id, i);
+	 /*flexran_remove_ul_slice(mod_id, i) < 1)*/
+
+	
+}
+
+

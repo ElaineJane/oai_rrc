@@ -128,7 +128,7 @@ void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t
 
 	 for (sliceId = 0;sliceId < SLICE_NUM;sliceId++){ /*The maximum needs to be modifed*/
 
-	   slice_th[sliceId] = 0;// slice_ctx[sliceId].thr_SLA; TODO
+	   slice_th[sliceId] = slice_ctx[sliceId].thr_SLA; 
 
 
 	 }
@@ -141,13 +141,13 @@ void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t
 	/*calculate the percentage*/
 	 for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-	   slice_pct[sliceId] = 0; // slice_ctx[sliceId].thr_SLA/sum; TODO
+	   slice_pct[sliceId] = slice_ctx[sliceId].thr_SLA/sum; 
 	 }
 
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-	  slice_state[sliceId].pct =  0.5;// slice_pct[sliceId]; /*Shoud be improved later*/
+	  slice_state[sliceId].pct =  slice_pct[sliceId]; /*Shoud be improved later*/
 	}
 
 

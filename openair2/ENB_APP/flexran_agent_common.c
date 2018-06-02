@@ -1151,3 +1151,40 @@ int flexran_agent_handle_ue_config_reply(mid_t mod_id, const void *params, Proto
   *msg = NULL;
   return 0;
 }
+/*A callback for CRUD operation*/
+int flexran_agent_handle_slice_crud(mid_t mod_id, const void *params, Protocol__FlexranMessage **msg)
+{
+  Protocol__FlexranMessage *input = (Protocol__FlexranMessage *)params;
+  Protocol__FlexEnbConfigReply *enb_config = input->enb_config_reply_msg;
+
+  if (enb_config->n_cell_config == 0) {
+    LOG_W(FLEXRAN_AGENT,
+          "received enb_config_reply message does not contain a cell_config\n");
+    *msg = NULL;
+    return 0;
+  }
+
+  // if (enb_config->n_cell_config > 1)
+  //   LOG_W(FLEXRAN_AGENT, "ignoring slice configs for other cell except cell 0\n");
+  // if (enb_config->cell_config[0]->slice_config)
+  //   prepare_update_slice_config(mod_id, enb_config->cell_config[0]->slice_config);
+
+  /*From flexRAN protocol*/
+  // if (/*Create*/){
+
+      // flexran_agent_create_slice();
+      
+
+  // }
+  // else if (/*Delete*/) {
+
+  
+    // flexran_agent_delete_slice();
+
+  // }
+
+  /* could test for cell configs here and maybe reconfigure/soft-restart */
+
+  *msg = NULL;
+  return 0;
+}
