@@ -1023,9 +1023,9 @@ typedef struct {
 
     int       prio;
 
-    /// Frequency ranges for slice positioning (10ms window)
-    int       pos_low[10];
-    int       pos_high[10];
+    /// Frequency ranges for slice positioning (100ms window)
+    int       pos_low[100];
+    int       pos_high[100];
 
     // max mcs for each slice
     int       maxmcs;
@@ -1078,6 +1078,11 @@ typedef struct {
 typedef struct {
     /// counter used to indicate when all slices have pre-allocated UEs
     //int      slice_counter;
+    // Window
+    int        window;
+
+   /// Resource distribution policy 
+    int        rd_policy; 
 
     /// indicates whether remaining RBs after first intra-slice allocation will
     /// be allocated to UEs of the same slice

@@ -945,6 +945,10 @@ void flexran_agent_read_slice_config(mid_t mod_id, Protocol__FlexSliceConfig *s)
   s->has_intraslice_share_active = 1;
   s->interslice_share_active = flexran_get_interslice_sharing_active(mod_id);
   s->has_interslice_share_active = 1;
+  s->window = flexran_get_slice_virtualizer_window(mod_id);
+  s->has_window = 1;
+  s->rd_policy = flexran_get_slice_virtualizer_rd_policy(mod_id);
+  s->has_rd_policy = 1;
 }
 
 void flexran_agent_read_slice_dl_config(mid_t mod_id, int slice_idx, Protocol__FlexDlSlice *dl_slice)
@@ -1066,6 +1070,21 @@ void overwrite_slice_config(mid_t mod_id, Protocol__FlexSliceConfig *exist, Prot
     exist->interslice_share_active = update->interslice_share_active;
     exist->has_interslice_share_active = 1;
   }
+  if (update->has_window
+      && exist->window != update->window) {
+    LOG_I(FLEXRAN_AGENT, "[%d] update window: %d -> %d\n",
+          mod_id, exist->window, update->window);
+    exist->window = update->window;
+    exist->window = 1;
+  }
+  if (update->has_rd_policy
+      && exist->rd_policy != update->rd_policy) {
+    LOG_I(FLEXRAN_AGENT, "[%d] update window: %d -> %d\n",
+          mod_id, exist->rd_policy, update->rd_policy);
+    exist->window = update->rd_policy;
+    exist->window = 1;
+  }
+
 }
 
 void overwrite_slice_config_dl(mid_t mod_id, Protocol__FlexDlSlice *exist, Protocol__FlexDlSlice *update)
@@ -1451,6 +1470,15 @@ int apply_new_slice_config(mid_t mod_id, Protocol__FlexSliceConfig *olds, Protoc
   }
   if (olds->interslice_share_active != news->interslice_share_active) {
     flexran_set_interslice_sharing_active(mod_id, news->interslice_share_active);
+    changes++;
+  }
+
+  if (olds->window != news->window) {
+    flexran_set_slice_virtualizer_window(mod_id, news->window);
+    changes++;
+  }
+  if (olds->rd_policy != news->rd_policy) {
+    flexran_set_slice_virtualizer_rd_policy(mod_id, news->rd_policy);
     changes++;
   }
   return changes;

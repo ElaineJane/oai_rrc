@@ -1444,6 +1444,39 @@ int flexran_find_dl_slice(mid_t mod_id, slice_id_t slice_id)
   return -1;
 }
 
+int flexran_set_slice_virtualizer_window(mid_t mod_id, int window)
+{
+  if (!mac_is_present(mod_id)) return -1;
+  slice_info_t *sli = &RC.mac[mod_id]->slice_info;
+  sli->window = window;
+  
+  return 0;
+}
+
+int flexran_get_slice_virtualizer_window(mid_t mod_id)
+{
+  if (!mac_is_present(mod_id)) return -1;
+  slice_info_t *sli = &RC.mac[mod_id]->slice_info;
+  return sli->window;
+
+}
+
+int flexran_set_slice_virtualizer_rd_policy(mid_t mod_id, int rd_policy)
+{
+
+  if (!mac_is_present(mod_id)) return -1;
+  slice_info_t *sli = &RC.mac[mod_id]->slice_info;
+  sli->rd_policy = rd_policy;
+
+}
+
+int flexran_get_slice_virtualizer_rd_policy(mid_t mod_id)
+{
+  if (!mac_is_present(mod_id)) return -1;
+  slice_info_t *sli = &RC.mac[mod_id]->slice_info;
+  return sli->rd_policy;
+}  
+
 int flexran_remove_dl_slice(mid_t mod_id, int slice_idx)
 {
   if (!mac_is_present(mod_id)) return -1;

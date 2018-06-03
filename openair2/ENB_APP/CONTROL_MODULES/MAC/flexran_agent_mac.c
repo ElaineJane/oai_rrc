@@ -1554,6 +1554,11 @@ Protocol__FlexSliceConfig *flexran_agent_get_slice_config(mid_t mod_id)
   config->intraslice_share_active = slice_config[mod_id]->intraslice_share_active;
   config->has_interslice_share_active = 1;
   config->interslice_share_active = slice_config[mod_id]->interslice_share_active;
+  config->window = slice_config[mod_id]->window;
+  config->has_window = 1;
+  config->rd_policy = slice_config[mod_id]->rd_policy;
+  config->has_rd_policy = 1;
+
   for (int i = 0; i < slice_config[mod_id]->n_dl; ++i) {
     if (!config->dl[i]) continue;
     config->dl[i]->has_id         = 1;

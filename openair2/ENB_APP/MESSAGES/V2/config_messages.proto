@@ -56,6 +56,8 @@ message flex_slice_config {
 	optional bool   interslice_share_active = 3;
 	repeated flex_dl_slice dl = 1;
 	repeated flex_ul_slice ul = 2;
+	optional uint32 window = 5;
+	optional uint32 rd_policy = 6; /*Resource distribution policy*/
 }
 
 message flex_ue_config {
