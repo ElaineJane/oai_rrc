@@ -1075,14 +1075,14 @@ void overwrite_slice_config(mid_t mod_id, Protocol__FlexSliceConfig *exist, Prot
     LOG_I(FLEXRAN_AGENT, "[%d] update window: %d -> %d\n",
           mod_id, exist->window, update->window);
     exist->window = update->window;
-    exist->window = 1;
+    exist->has_window = 1;
   }
   if (update->has_rd_policy
       && exist->rd_policy != update->rd_policy) {
     LOG_I(FLEXRAN_AGENT, "[%d] update rd_policy: %d -> %d\n",
           mod_id, exist->rd_policy, update->rd_policy);
-    exist->window = update->rd_policy;
-    exist->window = 1;
+    exist->rd_policy = update->rd_policy;
+    exist->has_rd_policy = 1;
   }
 
 }

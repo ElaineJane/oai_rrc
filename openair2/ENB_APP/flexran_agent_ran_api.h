@@ -541,13 +541,13 @@ int flexran_create_dl_slice(mid_t mod_id, slice_id_t slice_id);
 /* Finds slice in DL with given slice_id and returns slice index */
 int flexran_find_dl_slice(mid_t mod_id, slice_id_t slice_id);
 
-/*Get the Resource distribution policy*/
+/* Get the Resource distribution policy*/
 int flexran_get_slice_virtualizer_RD_policy(mid_t mod_id);
-/*Set the Resource distribution policy*/
+/* Set the Resource distribution policy*/
 int flexran_set_slice_virtualizer_RD_policy(mid_t mod_id, int RD_policy);
-/*Get the window length of virtualizer*/
+/* Get the window length of virtualizer*/
 int flexran_get_slice_virtualizer_window(mid_t mod_id);
-/*Get the window length of virtualizer*/
+/* Get the window length of virtualizer*/
 int flexran_set_slice_virtualizer_window(mid_t mod_id, int window);
 
 /* Remove slice in DL, returns new number of slices or -1 on error */
