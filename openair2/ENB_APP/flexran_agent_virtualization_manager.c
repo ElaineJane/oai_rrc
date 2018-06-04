@@ -146,7 +146,7 @@ void flexran_agent_resource_distribute_algorithm_sla_based(int mod_id, virtualiz
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-	   slice_state[sliceId].pct =  flexran_get_dl_slice_percentage(mod_id, sliceId); //slice_pct[sliceId]; /*Shoud be improved later*/
+	   slice_state[sliceId].pct =  (double) flexran_get_dl_slice_percentage(mod_id, sliceId)/100; //slice_pct[sliceId]; /*Shoud be improved later*/
 	}
 
 
