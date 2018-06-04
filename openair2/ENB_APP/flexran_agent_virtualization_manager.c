@@ -35,9 +35,9 @@ virtualizer_manager_t * virt_mgr_t;
 
 /*Slice Scheduling over window*/
 
-void flexran_agent_slice_scheduling(){
+void flexran_agent_slice_scheduling(int mod_id){
 
-	flexran_agent_virtualizaion_manager();
+	flexran_agent_virtualizaion_manager(mod_id);
 
 	/*Algorithm context state*/
 	slice_current_state  * slice_state = malloc(sizeof(slice_current_state) * virt_mgr_t->num_admitted_slices);
@@ -46,9 +46,9 @@ void flexran_agent_slice_scheduling(){
 	// flexran_agent_update_slice_transmissionrate();
 
 
-    flexran_agent_resource_distribute_algorithm(virt_mgr_t, slice_state);
+    flexran_agent_resource_distribute_algorithm(mod_id, virt_mgr_t, slice_state);
 
-    flexran_agent_create_resource_partitioning_grid(virt_mgr_t, slice_state);
+    flexran_agent_create_resource_partitioning_grid(mod_id, virt_mgr_t, slice_state);
 
 }
 
@@ -67,9 +67,8 @@ void flexran_agent_slice_scheduling(){
 
 // }
 
-void flexran_agent_virtualizaion_manager(){
+void flexran_agent_virtualizaion_manager(int mod_id){
 
-	int mod_id = 0;
 
 	/*Needs to be added to flexRAN*/
 	/* virtualizer params*/
@@ -88,7 +87,7 @@ void flexran_agent_virtualizaion_manager(){
 */
 
 
-void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
+void flexran_agent_resource_distribute_algorithm(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state){
 
    switch (virt_mgr_t->scheduler_algo){
      
@@ -96,13 +95,13 @@ void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mg
      
      case SLA_BASED:
 
-       flexran_agent_resource_distribute_algorithm_sla_based(virt_mgr_t, slice_state);
+       flexran_agent_resource_distribute_algorithm_sla_based(mod_id, virt_mgr_t, slice_state);
 
        break;
 
      case METRIC:
 
-       flexran_agent_resource_distribute_algorithm_metric_based(virt_mgr_t, slice_state);
+       flexran_agent_resource_distribute_algorithm_metric_based(mod_id, virt_mgr_t, slice_state);
      
        break;
 
@@ -113,7 +112,7 @@ void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mg
 }
 
 
-void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
+void flexran_agent_resource_distribute_algorithm_sla_based(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
 	slice_context_manager * slice_ctx = flexran_agent_getslicectxt(); /*Should be handled with context manager, connected with common agent */
 	int sliceId;
@@ -147,13 +146,13 @@ void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t
 	/*Distribute the Percentage Resources*/
 	for (sliceId = 0; sliceId < SLICE_NUM; sliceId++){
 
-	  // slice_state[sliceId].pct =  0.5; slice_pct[sliceId]; /*Shoud be improved later*/
+	   slice_state[sliceId].pct =  flexran_get_dl_slice_percentage(mod_id, sliceId); //slice_pct[sliceId]; /*Shoud be improved later*/
 	}
 
 
 }
 
-void flexran_agent_resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
+void flexran_agent_resource_distribute_algorithm_metric_based(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
 	slice_context_manager * slice_ctx = flexran_agent_getslicectxt();
 
@@ -161,16 +160,14 @@ void flexran_agent_resource_distribute_algorithm_metric_based(virtualizer_manage
 
 }
 
- void flexran_agent_create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
+ void flexran_agent_create_resource_partitioning_grid(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state){
 
  	/*Temprorys*/
  	int cc_id = 0;
- 	int mod_id = 0;
  	int i;
  	int j;
  	int slice_count = 0;
  	double tmp;
- 	int mode_id = 0;
 
 
  	int N_RBG_DL = flexran_get_N_RBG(mod_id, cc_id); /*Needs to be handled in a better way for indexes, TBD*/

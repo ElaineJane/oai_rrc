@@ -642,7 +642,7 @@ eNB_dlsch_ulsch_scheduler(module_id_t module_idP, frame_t frameP,
 
   /*RAN Runtime Slicing */
   if (subframeP == 0){
-  	flexran_agent_slice_scheduling();
+  	flexran_agent_slice_scheduling(module_idP);
   }
   // This schedules MIB
 

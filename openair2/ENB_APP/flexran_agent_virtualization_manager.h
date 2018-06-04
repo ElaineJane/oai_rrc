@@ -121,16 +121,16 @@ slice_context_manager * flexran_agent_getslicectxt(void);
 
 /*Virtualization Manager Protos*/
 
-void flexran_agent_slice_scheduling(void);
+void flexran_agent_slice_scheduling(int mod_id);
 
-void flexran_agent_virtualizaion_manager(void);
+void flexran_agent_virtualizaion_manager(int mod_id);
 
 /*Slice Scheduling protos*/
 
-void flexran_agent_resource_distribute_algorithm(virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state);
+void flexran_agent_resource_distribute_algorithm(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state * slice_state);
 
-void flexran_agent_create_resource_partitioning_grid(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
+void flexran_agent_create_resource_partitioning_grid(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
 
-void flexran_agent_resource_distribute_algorithm_sla_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
+void flexran_agent_resource_distribute_algorithm_sla_based(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
 
-void flexran_agent_resource_distribute_algorithm_metric_based(virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);
+void flexran_agent_resource_distribute_algorithm_metric_based(int mod_id, virtualizer_manager_t * virt_mgr_t, slice_current_state *  slice_state);

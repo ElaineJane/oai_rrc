@@ -480,17 +480,17 @@ void decode_slice_positioning(module_id_t Mod_idP,
                               sub_frame_t subframe,
                               uint8_t slice_allocation_mask[MAX_NUM_CCs][N_RBG_MAX]) {
   uint8_t CC_id;
-  int RBG, start_frequency, end_frequency;
-
+  int RBG, start_frequency, end_frequency, window;
+ 
   // Init slice_alloc_mask
   for (CC_id = 0; CC_id < MAX_NUM_CCs; ++CC_id) {
     for (RBG = 0; RBG < N_RBG_MAX; ++RBG) {
       slice_allocation_mask[CC_id][RBG] = 0;
     }
   }
-
-  start_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low[subframe];
-  end_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high[subframe];
+  window = RC.mac[Mod_idP]->slice_info.window;
+  start_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low[(subframe+10*frameP) % window];
+  end_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high[(subframe+ 10*frameP) % window];
   for (CC_id = 0; CC_id < MAX_NUM_CCs; ++CC_id) {
     for (RBG = start_frequency; RBG <= end_frequency; ++RBG) {
       slice_allocation_mask[CC_id][RBG] = 1;
