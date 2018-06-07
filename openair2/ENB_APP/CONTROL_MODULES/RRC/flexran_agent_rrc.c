@@ -498,11 +498,14 @@ int flexran_agent_rrc_stats_reply(mid_t mod_id,
 
   // Protocol__FlexHeader *header;
   int i,j;
+  int UE_id;
 
   /* Allocate memory for list of UE reports */
   if (report_config->nr_ue > 0) {
 
     for (i = 0; i < report_config->nr_ue; i++) {
+
+      UE_id = flexran_get_ue_id(mod_id, i);
       
       /* Check flag for creation of buffer status report */
       if (report_config->ue_report_type[i].ue_report_flags & PROTOCOL__FLEX_UE_STATS_TYPE__FLUST_RRC_MEASUREMENTS) {
@@ -514,14 +517,14 @@ int flexran_agent_rrc_stats_reply(mid_t mod_id,
       	  goto error;
       	protocol__flex_rrc_measurements__init(rrc_measurements);
       	
-      	rrc_measurements->measid = flexran_get_rrc_pcell_measid(mod_id,i);
-      	rrc_measurements->has_measid = 1;
-      	
-      	rrc_measurements->pcell_rsrp = flexran_get_rrc_pcell_rsrp(mod_id,i);
-      	rrc_measurements->has_pcell_rsrp = 1;
-      	
-      	rrc_measurements->pcell_rsrq = flexran_get_rrc_pcell_rsrq(mod_id,i);
-      	rrc_measurements->has_pcell_rsrq = 1 ;
+        rrc_measurements->measid = flexran_get_rrc_pcell_measid(mod_id, UE_id);
+        rrc_measurements->has_measid = 1;
+
+        rrc_measurements->pcell_rsrp = flexran_get_rrc_pcell_rsrp(mod_id, UE_id);
+        rrc_measurements->has_pcell_rsrp = 1;
+
+        rrc_measurements->pcell_rsrq = flexran_get_rrc_pcell_rsrq(mod_id, UE_id);
+        rrc_measurements->has_pcell_rsrq = 1 ;
 
         
         /* Target Cell, Neghibouring*/
@@ -532,7 +535,7 @@ int flexran_agent_rrc_stats_reply(mid_t mod_id,
         protocol__flex_neigh_cells_measurements__init(neigh_meas);
          
         
-        neigh_meas->n_eutra_meas = flexran_get_rrc_num_ncell(mod_id, i);
+        neigh_meas->n_eutra_meas = flexran_get_rrc_num_ncell(mod_id, UE_id);
 
         Protocol__FlexEutraMeasurements **eutra_meas = NULL;
 
@@ -550,7 +553,7 @@ int flexran_agent_rrc_stats_reply(mid_t mod_id,
 
               protocol__flex_eutra_measurements__init(eutra_meas[j]);
 
-              eutra_meas[j]->phys_cell_id = flexran_get_rrc_neigh_phy_cell_id(mod_id, i, j);
+              eutra_meas[j]->phys_cell_id = flexran_get_rrc_neigh_phy_cell_id(mod_id, UE_id, j);
               eutra_meas[j]->has_phys_cell_id = 1;
 
 
@@ -561,10 +564,10 @@ int flexran_agent_rrc_stats_reply(mid_t mod_id,
 
               protocol__flex_eutra_ref_signal_meas__init(meas_result);     
 
-              meas_result->rsrp = flexran_get_rrc_neigh_rsrp(mod_id, i, eutra_meas[j]->phys_cell_id);
+              meas_result->rsrp = flexran_get_rrc_neigh_rsrp(mod_id, UE_id, eutra_meas[j]->phys_cell_id);
               meas_result->has_rsrp = 1;
 
-              meas_result->rsrq = flexran_get_rrc_neigh_rsrq(mod_id, i, eutra_meas[j]->phys_cell_id);
+              meas_result->rsrq = flexran_get_rrc_neigh_rsrq(mod_id, UE_id, eutra_meas[j]->phys_cell_id);
               meas_result->has_rsrq = 1;
 
               eutra_meas[j]->meas_result = meas_result;
@@ -628,8 +631,10 @@ int flexran_agent_rrc_stats_reply(mid_t mod_id,
 
   for (i = 0; i < report_config->nr_ue; i++){
 
+      UE_id = flexran_get_ue_id(mod_id, i);
+
       if (ue_report[i]->rrc_measurements->neigh_meas != NULL){
-          for (j = 0; j < flexran_get_rrc_num_ncell(mod_id, i); j++){
+          for (j = 0; j < flexran_get_rrc_num_ncell(mod_id, UE_id); j++){
 
              free(ue_report[i]->rrc_measurements->neigh_meas->eutra_meas[j]);
         }
