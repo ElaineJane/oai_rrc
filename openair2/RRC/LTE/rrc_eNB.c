@@ -6832,7 +6832,7 @@ rrc_eNB_decode_dcch(
 
 	//WARNING:Inform the controller about the UE activation. Should be moved to RRC agent in the future
 	if (rrc_agent_registered[ctxt_pP->module_id]) {
-	  agent_rrc_xface[ctxt_pP->eNB_index]->flexran_agent_notify_ue_state_change(ctxt_pP->module_id,
+	  agent_rrc_xface[ctxt_pP->module_id]->flexran_agent_notify_ue_state_change(ctxt_pP->module_id,
 										ue_context_p->ue_id_rnti,
 										PROTOCOL__FLEX_UE_STATE_CHANGE_TYPE__FLUESC_UPDATED);
 	}
@@ -6988,7 +6988,7 @@ if (ue_context_p->ue_context.nb_of_modify_e_rabs > 0) {
 
           //WARNING:Inform the controller about the UE activation. Should be moved to RRC agent in the future
           if (mac_agent_registered[ctxt_pP->module_id]) {
-            agent_rrc_xface[ctxt_pP->eNB_index]->flexran_agent_notify_ue_state_change(ctxt_pP->module_id,
+            agent_rrc_xface[ctxt_pP->module_id]->flexran_agent_notify_ue_state_change(ctxt_pP->module_id,
                                                                                       ue_context_p->ue_id_rnti,
                                                                                       PROTOCOL__FLEX_UE_STATE_CHANGE_TYPE__FLUESC_ACTIVATED);
           }
@@ -7048,7 +7048,7 @@ if (ue_context_p->ue_context.nb_of_modify_e_rabs > 0) {
 	  
 	  //WARNING:Inform the controller about the UE activation. Should be moved to RRC agent in the future
 	  if (rrc_agent_registered[ctxt_pP->module_id]) {
-	    agent_rrc_xface[ctxt_pP->eNB_index]->flexran_agent_notify_ue_state_change(ctxt_pP->module_id,
+	    agent_rrc_xface[ctxt_pP->module_id]->flexran_agent_notify_ue_state_change(ctxt_pP->module_id,
 										  ue_context_p->ue_id_rnti,
 										  PROTOCOL__FLEX_UE_STATE_CHANGE_TYPE__FLUESC_ACTIVATED);
 	  }
