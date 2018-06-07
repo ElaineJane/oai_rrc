@@ -134,6 +134,8 @@ typedef struct pdcp_enb_s {
   uint16_t uid[NUMBER_OF_UE_MAX];
   rnti_t rnti[NUMBER_OF_UE_MAX];
   uint16_t num_ues;
+#define TM_SKIP_FULL_BUF_MS (500)
+  uint64_t time_buf_full[NUMBER_OF_UE_MAX];
   
   uint64_t sfn;
   frame_t  frame;
