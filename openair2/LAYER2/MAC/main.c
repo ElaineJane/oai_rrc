@@ -68,6 +68,32 @@ void init_UE_list(UE_list_t *UE_list)
   memset(UE_list->assoc_ul_slice_idx, 0, sizeof(UE_list->assoc_ul_slice_idx));
 }
 
+void init_slice_info(slice_info_t *sli)
+{
+  sli->intraslice_share_active = 1;
+  sli->interslice_share_active = 1;
+
+  sli->n_dl = 1;
+  memset(sli->dl, 0, sizeof(slice_sched_conf_dl_t) * MAX_NUM_SLICES);
+  sli->dl[0].pct = 1.0;
+  sli->dl[0].prio = 10;
+  sli->dl[0].pos_high = N_RBG_MAX;
+  sli->dl[0].maxmcs = 28;
+  sli->dl[0].sorting = 0x012345;
+  sli->dl[0].sched_name = "schedule_ue_spec";
+  sli->dl[0].sched_cb = dlsym(NULL, sli->dl[0].sched_name);
+  AssertFatal(sli->dl[0].sched_cb, "DLSCH scheduler callback is NULL\n");
+
+  sli->n_ul = 1;
+  memset(sli->ul, 0, sizeof(slice_sched_conf_ul_t) * MAX_NUM_SLICES);
+  sli->ul[0].pct = 1.0;
+  sli->ul[0].maxmcs = 20;
+  sli->ul[0].sorting = 0x0123;
+  sli->ul[0].sched_name = "schedule_ulsch_rnti";
+  sli->ul[0].sched_cb = dlsym(NULL, sli->ul[0].sched_name);
+  AssertFatal(sli->ul[0].sched_cb, "ULSCH scheduler callback is NULL\n");
+}
+
 void mac_top_init_eNB(void)
 {
   module_id_t i, j;
@@ -116,31 +142,7 @@ void mac_top_init_eNB(void)
     mac[i]->if_inst = IF_Module_init(i);
 
     init_UE_list(&mac[i]->UE_list);
-
-    sli = &mac[i]->slice_info;
-
-    sli->intraslice_share_active = 1;
-    sli->interslice_share_active = 1;
-
-    sli->n_dl = 1;
-    memset(sli->dl, 0, sizeof(slice_sched_conf_dl_t) * MAX_NUM_SLICES);
-    sli->dl[0].pct = 1.0;
-    sli->dl[0].prio = 10;
-    sli->dl[0].pos_high = N_RBG_MAX;
-    sli->dl[0].maxmcs = 28;
-    sli->dl[0].sorting = 0x012345;
-    sli->dl[0].sched_name = "schedule_ue_spec";
-    sli->dl[0].sched_cb = dlsym(NULL, sli->dl[0].sched_name);
-    AssertFatal(sli->dl[0].sched_cb, "DLSCH scheduler callback is NULL\n");
-
-    sli->n_ul = 1;
-    memset(sli->ul, 0, sizeof(slice_sched_conf_ul_t) * MAX_NUM_SLICES);
-    sli->ul[0].pct = 1.0;
-    sli->ul[0].maxmcs = 20;
-    sli->ul[0].sorting = 0x0123;
-    sli->ul[0].sched_name = "schedule_ulsch_rnti";
-    sli->ul[0].sched_cb = dlsym(NULL, sli->ul[0].sched_name);
-    AssertFatal(sli->ul[0].sched_cb, "ULSCH scheduler callback is NULL\n");
+    init_slice_info(&mac[i]->slice_info);
   }
 
   RC.mac = mac;
