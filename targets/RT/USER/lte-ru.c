@@ -1902,8 +1902,6 @@ void kill_RU_proc(int inst)
   proc->instance_cnt_FH = 0;
   pthread_cond_signal(&proc->cond_FH);
   pthread_mutex_unlock(&proc->mutex_FH);
-  LOG_D(PHY, "Joining pthread_FH\n");
-  pthread_join(proc->pthread_FH, NULL);
 
   pthread_mutex_lock(&proc->mutex_FH1);
   proc->instance_cnt_FH1 = 0;
@@ -1929,8 +1927,10 @@ void kill_RU_proc(int inst)
 
   pthread_mutex_lock(&proc->mutex_eNBs);
   proc->ru_tx_ready = 0;
-  proc->instance_cnt_eNBs = 0;
-  pthread_cond_signal(&proc->cond_eNBs);
+  proc->instance_cnt_eNBs = 1;
+  // cond_eNBs is used by both ru_thread and ru_thread_tx, so we need to send
+  // a broadcast to wake up both threads
+  pthread_cond_broadcast(&proc->cond_eNBs);
   pthread_mutex_unlock(&proc->mutex_eNBs);
 
   pthread_mutex_lock(&proc->mutex_asynch_rxtx);
@@ -1938,6 +1938,8 @@ void kill_RU_proc(int inst)
   pthread_cond_signal(&proc->cond_asynch_rxtx);
   pthread_mutex_unlock(&proc->mutex_asynch_rxtx);
 
+  LOG_D(PHY, "Joining pthread_FH\n");
+  pthread_join(proc->pthread_FH, NULL);
   if (get_nprocs() > 4) {
     LOG_D(PHY, "Joining pthread_FHTX\n");
     pthread_join(proc->pthread_FH1, NULL);
