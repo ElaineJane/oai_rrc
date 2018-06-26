@@ -937,10 +937,8 @@ schedule_ulsch(module_id_t module_idP, frame_t frameP,
       break;
     }
   }
-  for (CC_id = 0; CC_id < NFAPI_CC_MAX; CC_id++) {
 
-
-
+  for (CC_id = 0; CC_id < RC.nb_mac_CC[module_idP]; CC_id++) {
     //leave out first RB for PUCCH
     first_rb[CC_id] = 1;
 
@@ -1017,7 +1015,7 @@ schedule_ulsch_rnti(module_id_t module_idP,
   nfapi_ul_config_request_t *ul_req_tmp            = &mac->UL_req_tmp[CC_id][sched_subframeP];
   nfapi_ul_config_request_body_t *ul_req_tmp_body  = &ul_req_tmp->ul_config_request_body;
 
-	for (CC_id = 0; CC_id < NFAPI_CC_MAX; ++CC_id) {
+	for (CC_id = 0; CC_id < RC.nb_mac_CC[module_idP]; ++CC_id) {
     N_RB_UL = to_prb(cc[CC_id].ul_Bandwidth);
 		UE_list->first_rb_offset[CC_id][slice_idx] = cmin(N_RB_UL, sli->ul[slice_idx].first_rb);
 	}
@@ -1025,7 +1023,7 @@ schedule_ulsch_rnti(module_id_t module_idP,
   //LOG_D(MAC, "entering ulsch preprocesor\n");
   ulsch_scheduler_pre_processor(module_idP, slice_idx, frameP, subframeP, first_rb);
 
-	for (CC_id = 0; CC_id < NFAPI_CC_MAX; ++CC_id) {
+	for (CC_id = 0; CC_id < RC.nb_mac_CC[module_idP]; ++CC_id) {
     first_rb_slice[CC_id] = first_rb[CC_id] + UE_list->first_rb_offset[CC_id][slice_idx];
   }
   //LOG_D(MAC, "exiting ulsch preprocesor\n");

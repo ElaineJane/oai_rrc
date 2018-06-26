@@ -483,7 +483,7 @@ void decode_slice_positioning(module_id_t Mod_idP,
   int RBG, start_frequency, end_frequency;
 
   // Init slice_alloc_mask
-  for (CC_id = 0; CC_id < NFAPI_CC_MAX; ++CC_id) {
+  for (CC_id = 0; CC_id < RC.nb_mac_CC[Mod_idP]; ++CC_id) {
     for (RBG = 0; RBG < N_RBG_MAX; ++RBG) {
       slice_allocation_mask[CC_id][RBG] = 0;
     }
@@ -491,7 +491,7 @@ void decode_slice_positioning(module_id_t Mod_idP,
 
   start_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_low;
   end_frequency = RC.mac[Mod_idP]->slice_info.dl[slice_idx].pos_high;
-  for (CC_id = 0; CC_id < NFAPI_CC_MAX; ++CC_id) {
+  for (CC_id = 0; CC_id < RC.nb_mac_CC[Mod_idP]; ++CC_id) {
     for (RBG = start_frequency; RBG <= end_frequency; ++RBG) {
       slice_allocation_mask[CC_id][RBG] = 1;
     }
@@ -1453,7 +1453,7 @@ dlsch_scheduler_pre_processor_reset(module_id_t module_idP,
   uint8_t *vrb_map;
   COMMON_channels_t *cc;
 //
-  for (CC_id = 0; CC_id < NFAPI_CC_MAX; CC_id++) {
+  for (CC_id = 0; CC_id < RC.nb_mac_CC[module_idP]; CC_id++) {
 
     cc = &RC.mac[module_idP]->common_channels[CC_id];
     N_RBG[CC_id] = to_rbg(cc->mib->message.dl_Bandwidth);
