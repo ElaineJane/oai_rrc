@@ -309,6 +309,7 @@ class SSHConnection():
 		else:
 			self.command('cd ltebox/tools', '\$', 5)
 			self.command('echo ' + self.EPCPassword + ' | sudo -S ./stop_mme', '\$', 5)
+			time.sleep(1)
 		self.close()
 
 	def TerminateSPGW(self):
@@ -323,6 +324,7 @@ class SSHConnection():
 		else:
 			self.command('cd ltebox/tools', '\$', 5)
 			self.command('echo ' + self.EPCPassword + ' | sudo -S ./stop_xGw', '\$', 5)
+			time.sleep(1)
 		self.close()
 
 	def LogCollectBuild(self):
