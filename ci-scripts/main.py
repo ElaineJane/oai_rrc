@@ -537,7 +537,7 @@ while len(argvs) > 1:
 		SSH.ADBPassword = matchReg.group(1)
 	elif re.match('^\-\-XMLTestFile=(.+)$', myArgv, re.IGNORECASE):
 		matchReg = re.match('^\-\-XMLTestFile=(.+)$', myArgv, re.IGNORECASE)
-		self.testXMLfile = matchReg.group(1)
+		SSH.testXMLfile = matchReg.group(1)
 	else:
 		Usage()
 		sys.exit('Invalid Parameter: ' + myArgv)
@@ -610,10 +610,10 @@ elif re.match('^TesteNB$', mode, re.IGNORECASE):
 
 	#read test_case_list.xml file
         # if no parameters for XML file, use default value
-	if self.testXMLfile == '':
+	if SSH.testXMLfile == '':
 		xml_test_file = sys.path[0] + "/test_case_list.xml"
 	else:
-		xml_test_file = sys.path[0] + "/" + self.testXMLfile
+		xml_test_file = sys.path[0] + "/" + SSH.testXMLfile
 
 	xmlTree = ET.parse(xml_test_file)
 	xmlRoot = xmlTree.getroot()
