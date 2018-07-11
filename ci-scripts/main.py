@@ -612,7 +612,7 @@ elif re.match('^TesteNB$', mode, re.IGNORECASE):
         # if no parameters for XML file, use default value
 	if self.testXMLfile == '':
 		xml_test_file = sys.path[0] + "/test_case_list.xml"
-	else
+	else:
 		xml_test_file = sys.path[0] + "/" + self.testXMLfile
 
 	xmlTree = ET.parse(xml_test_file)
