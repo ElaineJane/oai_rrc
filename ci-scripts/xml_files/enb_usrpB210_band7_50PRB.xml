@@ -1,0 +1,16 @@
+<testCaseList>
+	<TestCaseRequestedList>030101 030201</TestCaseRequestedList>
+	<TestCaseExclusionList></TestCaseExclusionList>
+
+	<testCase id="030101">
+		<class>Initialize_eNB</class>
+		<desc>Initialize eNB (FDD/Band1/5MHz/info)</desc>
+		<Initialize_eNB_args>enb.band7.tm1.50PRB.usrpb210.conf</Initialize_eNB_args>
+	</testCase>
+
+	<testCase id="030201">
+		<class>Terminate_eNB</class>
+		<desc>Terminate eNB</desc>
+	</testCase>
+
+</testCaseList>
