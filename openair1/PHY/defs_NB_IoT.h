@@ -155,6 +155,7 @@ static inline void* malloc16_clear( size_t size )
 #else
 typedef enum {normal_txrx_NB_IoT=0,rx_calib_ue_NB_IoT=1,rx_calib_ue_med_NB_IoT=2,rx_calib_ue_byp_NB_IoT=3,debug_prach_NB_IoT=4,no_L2_connect_NB_IoT=5,calib_prach_tx_NB_IoT=6,rx_dump_frame_NB_IoT=7,loop_through_memory_NB_IoT=8} runmode_NB_IoT_t;
 #endif
+
 /*
 enum transmission_access_mode {
   NO_ACCESS=0,
@@ -530,7 +531,7 @@ typedef struct PHY_VARS_eNB_NB_IoT_s {
   void                          (*do_prach)(struct PHY_VARS_eNB_NB_IoT_s *eNB,int frame,int subframe);
   void                          (*fep)(struct PHY_VARS_eNB_NB_IoT_s *eNB,eNB_rxtx_proc_NB_IoT_t *proc);
   int                           (*td)(struct PHY_VARS_eNB_NB_IoT_s *eNB,int UE_id,int harq_pid,int llr8_flag);
-  int                           (*te)(struct PHY_VARS_eNB_NB_IoT_s *,uint8_t *,uint8_t,NB_IoT_eNB_DLSCH_t *,int,uint8_t,time_stats_t_NB_IoT *,time_stats_t_NB_IoT *,time_stats_t_NB_IoT *);
+  int                           (*te)(struct PHY_VARS_eNB_NB_IoT_s *,uint8_t *,uint8_t,NB_IoT_eNB_NDLSCH_t *,int,uint8_t,time_stats_t_NB_IoT *,time_stats_t_NB_IoT *,time_stats_t_NB_IoT *);
   void                          (*proc_uespec_rx)(struct PHY_VARS_eNB_NB_IoT_s *eNB,eNB_rxtx_proc_NB_IoT_t *proc,const relaying_type_t_NB_IoT r_type);
   void                          (*proc_tx)(struct PHY_VARS_eNB_NB_IoT_s *eNB,eNB_rxtx_proc_NB_IoT_t *proc,relaying_type_t_NB_IoT r_type,PHY_VARS_RN_NB_IoT *rn);
   void                          (*tx_fh)(struct PHY_VARS_eNB_NB_IoT_s *eNB,eNB_rxtx_proc_NB_IoT_t *proc);

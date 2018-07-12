@@ -187,6 +187,7 @@ static void configure_rrc(uint32_t enb_id, const Enb_properties_array_t *enb_pro
 
     RRC_CONFIGURATION_REQ (msg_p).ue_TransmissionMode[CC_id]                      = enb_properties->properties[enb_id]->ue_TransmissionMode[CC_id];
 
+
 /*    //Newly added 
     RRC_CONFIGURATION_REQ (msg_p).bcch_modificationPeriodCoeff_NB[CC_id]            = enb_properties->properties[enb_id]->bcch_modificationPeriodCoeff_NB[CC_id];
 
@@ -207,6 +208,7 @@ static void configure_rrc(uint32_t enb_id, const Enb_properties_array_t *enb_pro
     RRC_CONFIGURATION_REQ (msg_p).pcch_nB_NB[CC_id]                                  = enb_properties->properties[enb_id]->pcch_nB_NB[CC_id];
     RRC_CONFIGURATION_REQ (msg_p).pcch_npdcch_NumRepetitionPaging_NB[CC_id]                                  = enb_properties->properties[enb_id]->pcch_npdcch_NumRepetitionPaging_NB[CC_id];
 */
+
   }
 
   itti_send_msg_to_task (TASK_RRC_ENB, ENB_MODULE_ID_TO_INSTANCE(enb_id), msg_p);

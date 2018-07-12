@@ -1,6 +1,23 @@
-/***********************************************************************
+/* Licensed to the OpenAirInterface (OAI) Software Alliance under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The OpenAirInterface Software Alliance licenses this file to You under
+ * the OAI Public License, Version 1.0  (the "License"); you may not use this file
+ * except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.openairinterface.org/?page_id=698
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *-------------------------------------------------------------------------------
+ * For more information about the OpenAirInterface (OAI) Software Alliance:
+ *      contact@openairinterface.org
+ */
 
-**********************************************************************/
 /*! \file PHY/LTE_TRANSPORT/nsss_NB_IoT.c
 * \Generation of Narrowband Secondary Synchronisation Signal(NSSS) for NB-IoT,	 TS 36-212, V13.4.0 2017-02
 * \author M. KANJ
@@ -30,9 +47,9 @@ int generate_sss_NB_IoT(int32_t 				**txdataF,
 						unsigned short 			frame_number, 	// new attribute (Get value from higher layer), it does not exist for LTE
 						unsigned short 			RB_IoT_ID)		// new attribute (values are between 0.. Max_RB_number-1), it does not exist for LTE
 {
-	uint8_t  	    aa,Nid_NB_IoT,Nid2,f,q,s,c,u;
+	uint8_t  	    aa,Nid2,f,q,s,c,u;
 	int16_t 		*d;
-	uint16_t 		n_f;
+	uint16_t 		n_f,Nid_NB_IoT;
 	unsigned short  a;
 	uint16_t 		slot_id;  						// slot_id = 17 in NB_IoT
 	unsigned short  bandwidth_even_odd;
@@ -115,7 +132,7 @@ int generate_sss_NB_IoT(int32_t 				**txdataF,
 		{
 			NB_IoT_start = frame_parms->ofdm_symbol_size - 12*(frame_parms->N_RB_DL/2) - (bandwidth_even_odd*6) + 12*(RB_IoT_ID%(int)(ceil(frame_parms->N_RB_DL/(float)2)));
 		} else {
-			NB_IoT_start = (bandwidth_even_odd*6) + 12*(RB_IoT_ID%(int)(ceil(frame_parms->N_RB_DL/(float)2)));
+			NB_IoT_start = 1 + (bandwidth_even_odd*6) + 12*(RB_IoT_ID%(int)(ceil(frame_parms->N_RB_DL/(float)2)));
 		}
 		// For the In-band or Stand-alone case the REs of NPSS signal have the same positions
 		for (s=0; s<11; s++ ) 								// loop on OFDM symbols

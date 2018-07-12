@@ -18,6 +18,20 @@
  * For more information about the OpenAirInterface (OAI) Software Alliance:
  *      contact@openairinterface.org
  */
+/*! \file phy_procedures_lte_eNB.c
+ * \brief Implementation of eNB procedures from 36.213 LTE specifications
+ * \author R. Knopp, F. Kaltenberger, N. Nikaein, X. Foukas
+ * \date 2011
+ * \version 0.1
+ * \company Eurecom
+ * \email: knopp@eurecom.fr,florian.kaltenberger@eurecom.fr,navid.nikaein@eurecom.fr, x.foukas@sms.ed.ac.uk
+ * last changes: M. Kanj, V. Savaux
+ * date: 2018
+ * company: b<>com
+ * \email: matthieu.kanj@b-com.com, vincent.savaux@b-com.com
+ * \note
+ * \warning
+ */
 
 #include "defs.h"
 #include "SCHED/defs.h"
@@ -1378,6 +1392,10 @@ int phy_init_lte_eNB(PHY_VARS_eNB *eNB,
 
   if (eNB->node_function != NGFI_RRU_IF4p5) {
     lte_gold(fp,eNB->lte_gold_table,fp->Nid_cell);
+
+    // NB-IoT testing
+    lte_gold_NB_IoT(fp,eNB->lte_gold_table_NB_IoT,fp->Nid_cell);
+    //////////////////////////////////////////////////////////
     generate_pcfich_reg_mapping(fp);
     generate_phich_reg_mapping(fp);
 
@@ -1648,8 +1666,8 @@ void phy_init_lte_top_NB_IoT(NB_IoT_DL_FRAME_PARMS *frame_parms)
 
   //ccodedot11_init();
   //ccodedot11_init_inv();
-
-  //ccodelte_init();
+  ccodelte_init_NB_IoT();
+  ccodelte_init2_NB_IoT();
   //ccodelte_init_inv();
 
   //treillis_table_init();
@@ -1667,12 +1685,13 @@ void phy_init_lte_top_NB_IoT(NB_IoT_DL_FRAME_PARMS *frame_parms)
 
   //generate_ul_ref_sigs();
   //generate_ul_ref_sigs_rx();
+  generate_ul_ref_sigs_rx_NB_IoT();
 
  // generate_64qam_table();
   //generate_16qam_table();
  // generate_RIV_tables();
 
- // init_unscrambling_lut();
+ init_unscrambling_lut_NB_IoT();
  // init_scrambling_lut();
 
   //set_taus_seed(1328);
@@ -1704,7 +1723,7 @@ int phy_init_lte_eNB_NB_IoT(PHY_VARS_eNB_NB_IoT *eNB,
 
 
   if (eNB->node_function != NGFI_RRU_IF4p5_NB_IoT) {
-    lte_gold_NB_IoT(fp,eNB->lte_gold_table_NB_IoT,fp->Nid_cell);
+  //  lte_gold_NB_IoT(fp,eNB->lte_gold_table_NB_IoT,fp->Nid_cell);   ****** uncomment when this function is used - 16/02/2018
   //  generate_pcfich_reg_mapping(fp);
   //  generate_phich_reg_mapping(fp);
 

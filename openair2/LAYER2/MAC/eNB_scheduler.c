@@ -33,6 +33,8 @@
 #include "PHY/defs.h"
 #include "PHY/extern.h"
 
+//#include "PHY/LTE_TRANSPORT/dci_NB_IoT.h"
+
 #include "SCHED/defs.h"
 #include "SCHED/extern.h"
 
@@ -220,11 +222,11 @@ void eNB_dlsch_ulsch_scheduler(module_id_t module_idP,uint8_t cooperation_flag, 
 	      size_bytes = sizeof(DCI1A_1_5MHz_FDD_t);
 	      size_bits  = sizeof_DCI1A_1_5MHz_FDD_t;
 	      break;
-	    case 15:/*
-	      ((DCI1A_2_5MHz_FDD_t*)DLSCH_dci)->type = 1;
-	      ((DCI1A_2_5MHz_FDD_t*)DLSCH_dci)->rballoc = 31;
-	      size_bytes = sizeof(DCI1A_1_5MHz_FDD_t);
-	      size_bits  = sizeof_DCI1A_1_5MHz_FDD_t;*/
+	    case 15:
+	     // ((DCI1A_2_5MHz_FDD_t*)DLSCH_dci)->type = 1;
+	     // ((DCI1A_2_5MHz_FDD_t*)DLSCH_dci)->rballoc = 31;
+	     // size_bytes = sizeof(DCI1A_1_5MHz_FDD_t);
+	     // size_bits  = sizeof_DCI1A_1_5MHz_FDD_t;
 	      break;
 	    case 25:
 	      ((DCI1A_5MHz_FDD_t*)DLSCH_dci)->type = 1;
@@ -239,10 +241,10 @@ void eNB_dlsch_ulsch_scheduler(module_id_t module_idP,uint8_t cooperation_flag, 
 	      size_bits  = sizeof_DCI1A_10MHz_FDD_t;
 		break;
 	    case 75:
-	      /*	      ((DCI1A_15MHz_FDD_t*)DLSCH_dci)->type = 1;
-	      ((DCI1A_15MHz_FDD_t*)DLSCH_dci)->rballoc = 2047;
-	      size_bytes = sizeof(DCI1A_10MHz_FDD_t);
-	      size_bits  = sizeof_DCI1A_10MHz_FDD_t;*/
+	      //	      ((DCI1A_15MHz_FDD_t*)DLSCH_dci)->type = 1;
+	     // ((DCI1A_15MHz_FDD_t*)DLSCH_dci)->rballoc = 2047;
+	     // size_bytes = sizeof(DCI1A_10MHz_FDD_t);
+	    //  size_bits  = sizeof_DCI1A_10MHz_FDD_t;
 		break;
 	    case 100:
 	      ((DCI1A_20MHz_FDD_t*)DLSCH_dci)->type = 1;
@@ -335,12 +337,12 @@ void eNB_dlsch_ulsch_scheduler(module_id_t module_idP,uint8_t cooperation_flag, 
 
 #endif
 
-/* #ifndef DISABLE_SF_TRIGGER */
-/*   //Send subframe trigger to the controller */
-/*   if (mac_agent_registered[module_idP]) { */
-/*     agent_mac_xface[module_idP]->flexran_agent_send_sf_trigger(module_idP); */
-/*   } */
-/* #endif */
+// #ifndef DISABLE_SF_TRIGGER //
+//   //Send subframe trigger to the controller //
+//   if (mac_agent_registered[module_idP]) { //
+//     agent_mac_xface[module_idP]->flexran_agent_send_sf_trigger(module_idP); //
+//   } //
+// #endif //
   
   //if (subframeP%5 == 0)
   //#ifdef EXMIMO
@@ -365,17 +367,17 @@ void eNB_dlsch_ulsch_scheduler(module_id_t module_idP,uint8_t cooperation_flag, 
 
 #endif
   // refresh UE list based on UEs dropped by PHY in previous subframe
-  /*
-  i=UE_list->head;
-  while (i>=0) {
-    next_i = UE_list->next[i];
-    LOG_T(MAC,"UE %d : rnti %x, stats %p\n",i,UE_RNTI(module_idP,i),mac_xface->get_eNB_UE_stats(module_idP,0,UE_RNTI(module_idP,i)));
-    if (mac_xface->get_eNB_UE_stats(module_idP,0,UE_RNTI(module_idP,i))==NULL) {
-      mac_remove_ue(module_idP,i,frameP);
-    }
-    i=next_i;
-  }
-  */
+  //
+//  i=UE_list->head;
+//  while (i>=0) {
+//    next_i = UE_list->next[i];
+ //   LOG_T(MAC,"UE %d : rnti %x, stats %p\n",i,UE_RNTI(module_idP,i),mac_xface->get_eNB_UE_stats(module_idP,0,UE_RNTI(module_idP,i)));
+  //  if (mac_xface->get_eNB_UE_stats(module_idP,0,UE_RNTI(module_idP,i))==NULL) {
+  //    mac_remove_ue(module_idP,i,frameP);
+  //  }
+   // i=next_i;
+  //}
+  //
 
   switch (subframeP) {
   case 0:
@@ -1126,10 +1128,9 @@ void eNB_dlsch_ulsch_scheduler(module_id_t module_idP,uint8_t cooperation_flag, 
   LOG_D(MAC,"frameP %d, subframeP %d\n",frameP,subframeP);
   */
 
+
   stop_meas(&eNB_mac_inst[module_idP].eNB_scheduler);
   VCD_SIGNAL_DUMPER_DUMP_FUNCTION_BY_NAME(VCD_SIGNAL_DUMPER_FUNCTIONS_ENB_DLSCH_ULSCH_SCHEDULER,VCD_FUNCTION_OUT);
 
 }
-
-
 

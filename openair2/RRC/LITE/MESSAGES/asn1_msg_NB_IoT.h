@@ -85,6 +85,15 @@ uint8_t do_SIB1_NB_IoT(uint8_t Mod_id,
 				               uint32_t frame
                       );
 
+uint8_t do_SIB1_NB_IoT_x(uint8_t Mod_id, int CC_id,
+        rrc_eNB_carrier_data_NB_IoT_t *carrier,
+        uint16_t mcc, //208
+        uint16_t mnc, //92
+        uint16_t tac, //1
+        uint32_t cell_identity, //3584
+        uint16_t band,  // 7
+        uint16_t mnc_digit_length,
+        uint32_t frame);
 /**
 \brief Generate a default configuration for SIB2/SIB3-NB in one System Information PDU (eNB).
 @param Mod_id Index of eNB (used to derive some parameters)
@@ -161,11 +170,11 @@ PhysicalConfigDedicated-NB IEs.
 @returns Size of encoded bit stream in bytes*/
 
 uint8_t do_RRCConnectionSetup_NB_IoT(
-  const protocol_ctxt_t*     const ctxt_pP,
   rrc_eNB_ue_context_NB_IoT_t*      const ue_context_pP,
   int                              CC_id,
   uint8_t*                   const buffer, //carrier[CC_id].Srb0.Tx_buffer.Payload
   const uint8_t                    Transaction_id,
+
   //const NB_IoT_DL_FRAME_PARMS* const frame_parms, //to be changed but not deleted
   SRB_ToAddModList_NB_r13_t**             SRB_configList_NB_IoT, //in order to be configured--> stanno puntando alla SRB_configlist dell ue_context
   struct PhysicalConfigDedicated_NB_r13** physicalConfigDedicated_NB_IoT //in order to be configured--> stanno puntando alla physicalConfigDedicated dell ue_context

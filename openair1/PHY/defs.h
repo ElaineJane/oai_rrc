@@ -124,6 +124,9 @@ static inline void* malloc16_clear( size_t size )
 #include "impl_defs_top.h"
 #include "impl_defs_lte.h"
 
+#include "PHY/LTE_TRANSPORT/defs_NB_IoT.h"
+#include "openair2/PHY_INTERFACE/IF_Module_NB_IoT.h"
+
 #include "PHY/TOOLS/time_meas.h"
 #include "PHY/CODING/defs.h"
 #include "PHY/TOOLS/defs.h"
@@ -355,6 +358,10 @@ typedef struct PHY_VARS_eNB_s {
   /// cell-specific reference symbols
   uint32_t         lte_gold_table[20][2][14];
 
+
+  /// cell-specific reference symbols
+  uint32_t         lte_gold_table_NB_IoT[20][2][14];
+
   /// UE-specific reference symbols (p=5), TM 7
   uint32_t         lte_gold_uespec_port5_table[NUMBER_OF_UE_MAX][20][38];
 
@@ -530,6 +537,24 @@ typedef struct PHY_VARS_eNB_s {
   openair0_device ifdevice;
   /// Pointer for ifdevice buffer struct
   if_buffer_t ifbuffer;
+
+
+/////////////// NB-IoT testing ////////////////////////////
+volatile uint16_t preamble_index_NB_IoT;
+NB_IoT_eNB_NPBCH_t        npbch;
+NB_IoT_eNB_NDLSCH_t       *ndlsch[NUMBER_OF_UE_MAX];
+NB_IoT_eNB_NDLSCH_t       ndlsch_SIB;
+NB_IoT_eNB_NDLSCH_t       ndlsch_rar;
+NB_IoT_eNB_NPDCCH_temp_t  npdcch_tmp;
+
+NB_IoT_eNB_NULSCH_t       *ulsch_NB_IoT[NUMBER_OF_UE_MAX+1]; 
+////////////// For IF Module /////////////////////////////
+
+IF_Module_NB_IoT_t          *if_inst; 
+UL_IND_NB_IoT_t             UL_INFO;
+uint8_t                     msg3_pdu[6];
+//////////////////// END /////////////////////////////////
+
 
 } PHY_VARS_eNB;
 

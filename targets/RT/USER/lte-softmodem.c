@@ -1302,6 +1302,8 @@ void set_default_frame_parms(LTE_DL_FRAME_PARMS *frame_parms[MAX_NUM_CCs]) {
 
         frame_parms[CC_id]->nushift             = 0;
 
+        frame_parms[CC_id]->subcarrier_spacing             = 1;
+
         frame_parms[CC_id]->phich_config_common.phich_resource = oneSixth;
         frame_parms[CC_id]->phich_config_common.phich_duration = normal;
         // UL RS Config
@@ -1940,7 +1942,11 @@ int main( int argc, char **argv ) {
     int eMBMS_active=0;
     if (node_function[0] <= NGFI_RAU_IF4p5) { // don't initialize L2 for RRU
 
-
+      // MP, Nick: Initialization of IF module for NB-IoT should be here
+ 
+   //  if_inst = malloc(sizeof(IF_Module_t));
+  //   LOG_I(PHY,"Allocate IF-Module for NB-IoT\n");
+ 
 
         //---------------------------
 

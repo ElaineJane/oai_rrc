@@ -125,10 +125,26 @@ uint8_t *get_NB_IoT_MIB(void)
   return eNB_rrc_inst_NB_IoT->carrier[0].MIB_NB_IoT;
 }
 
+
 uint8_t *get_NB_IoT_MIB_size(void)
 {
   // CC_ID=0
   return eNB_rrc_inst_NB_IoT->carrier[0].sizeof_MIB_NB_IoT;
+}
+uint8_t *get_NB_IoT_SIB1(void)
+{
+  return eNB_rrc_inst_NB_IoT->carrier[0].SIB1_NB_IoT;
+}
+
+uint8_t *get_NB_IoT_SIB23(void)
+{
+  return eNB_rrc_inst_NB_IoT->carrier[0].SIB23_NB_IoT;
+}
+
+long *get_NB_IoT_SIB1_eutracontrolregionsize(void)
+{
+  return eNB_rrc_inst_NB_IoT->carrier[0].sib1_NB_IoT->eutraControlRegionSize_r13;
+
 }
 
 void init_testing_NB_IoT(uint8_t Mod_id, int CC_id, rrc_eNB_carrier_data_NB_IoT_t *carrier, RrcConfigurationReq *configuration, uint32_t frame, uint32_t hyper_frame)
@@ -195,6 +211,14 @@ void init_testing_NB_IoT(uint8_t Mod_id, int CC_id, rrc_eNB_carrier_data_NB_IoT_
     //exit here
   }
 
+  //dump SIB1_NB_IoT
+  
+  LOG_I(RRC,"Dump SIB1 NB-IoT content\n");
+  
+  for(int i = 0; i<32;i++)
+	printf("%02X ",carrier[CC_id].SIB1_NB_IoT[i]);
+  printf("\n");
+
   //SIB23_NB_IoT
   carrier[CC_id].SIB23_NB_IoT = (uint8_t*) malloc16(64);
 
@@ -227,6 +251,8 @@ void init_testing_NB_IoT(uint8_t Mod_id, int CC_id, rrc_eNB_carrier_data_NB_IoT_
                                   0,
                                   0
                                   );
+
+      LOG_I(MAC,"testing_NB_IoT config done\n");
   } else {
       LOG_E(RRC, " init_SI: FATAL, no memory for SIB23_NB_IoT allocated\n");
     //exit here
@@ -252,13 +278,14 @@ init_SI(
 #endif
   /*Nick Start*/
 
-  // for NB-IoT Initialization configuration testing
+  /////////////////// for NB-IoT Initialization configuration testing  //////////////////////////////////////////////
 
   if(eNB_rrc_inst_NB_IoT==NULL)
     eNB_rrc_inst_NB_IoT = (eNB_RRC_INST_NB_IoT*) malloc (sizeof(eNB_RRC_INST_NB_IoT));
 
   init_testing_NB_IoT(ctxt_pP->module_id,CC_id,&eNB_rrc_inst_NB_IoT[ctxt_pP->module_id].carrier[CC_id],configuration,0,0);
 
+//////////////////////////////////////// END //////////////////////////////////////////////////////////////////////////////////
   /*Here will copy basic parameters and implement do_MIB, rrc_eNB_carrier_data_t will add some parameters in MIB*/
 
   eNB_rrc_inst[ctxt_pP->module_id].carrier[CC_id].sizeof_SIB1 = 0;
